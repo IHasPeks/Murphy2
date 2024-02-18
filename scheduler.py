@@ -9,11 +9,11 @@ async def send_periodic_messages(
     Sends periodic messages to the Twitch chat at specified intervals.
 
     :param bot: The instance of the bot to send messages through.
-    :param interval_hours: The interval in hours at which messages should be sent.
+    :param interval_hours: interval in hours at which messages are sent.
     :param message: The message to be sent periodically.
     """
     while True:
-        await asyncio.sleep(interval_hours * 3600)  # Correctly convert hours to seconds
+        await asyncio.sleep(interval_hours * 3600)  # Convert hours to seconds
         for channel in TWITCH_INITIAL_CHANNELS:  # Use the imported list
             await bot.get_channel(channel).send(message)
 

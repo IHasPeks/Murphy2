@@ -36,14 +36,17 @@ class MurphyAI(commands.Bot):
 
         print(f"Message from {message.author.name}: {message.content}")
 
-            # Check if the message is a command that should be handled by TwitchIO decorators
+        # Check if the message is a command that should be handled
+        # by TwitchIO decorators
         if message.content.startswith(TWITCH_PREFIX):
             command_name = message.content[len(TWITCH_PREFIX):].split(" ")[0]
-            if command_name in ["join", "leave", "queue", "available", "notavailable"]:
-                # These commands will be handled by the TwitchIO command system, so just ensure we process them
+            if command_name in ["join", "leave", "queue",
+                                "available", "notavailable"]:
+                # These commands will be handled by the TwitchIO command system
+                # so just ensure we process them
                 await self.handle_commands(message)
                 return
-            
+
         # Handle other commands manually
         if message.content.startswith(TWITCH_PREFIX):
             await handle_command(self, message)
@@ -57,7 +60,8 @@ class MurphyAI(commands.Bot):
             await handle_ai_command(self, message)
             return
 
-        # Ensure this is always called to process commands like ?join, ?leave, etc.
+        # Ensure this is always called to process commands
+        # like ?join, ?leave, etc.
         await self.handle_commands(message)
 
     @commands.command(name="?join")
