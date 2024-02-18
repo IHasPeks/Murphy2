@@ -9,9 +9,7 @@ TWITCH_PREFIX = "?"  # Define the prefix for commands
 TWITCH_INITIAL_CHANNELS = ["IHasPeks"]  # List of channels the bot will join
 
 # AI Configuration
-OPENAI_API_KEY = (
-    "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"  # API Key for OpenAI, used for the AI command
-)
+OPENAI_API_KEY = "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"  # API Key for OpenAI, used for the AI command
 
 # Scheduler Configuration
 MESSAGE_INTERVAL_HOURS = 2  # Interval in hours for sending passive messages

@@ -4,8 +4,9 @@ from config import TWITCH_PREFIX
 
 openai.api_key = OPENAI_API_KEY
 
+
 async def handle_ai_command(bot, message):
-    user_message = message.content[len(TWITCH_PREFIX) + len("ai "):]
+    user_message = message.content[len(TWITCH_PREFIX) + len("ai ") :]
     if not user_message.strip():
         await message.channel.send("Please provide a message for the AI.")
         return
@@ -23,5 +24,7 @@ async def handle_ai_command(bot, message):
         )
         await message.channel.send(response.choices[0].message["content"])
     except Exception as e:
-        await message.channel.send("Sorry, I couldn't process that. Please try again later.")
+        await message.channel.send(
+            "Sorry, I couldn't process that. Please try again later."
+        )
         print(f"Error processing AI command: {e}")
