@@ -1,6 +1,9 @@
 import asyncio
 
-async def send_periodic_messages(bot, interval_hours=1, message="Remember to stay hydrated and take breaks!"):
+
+async def send_periodic_messages(
+    bot, interval_hours=1, message="Remember to stay hydrated and take breaks!"
+):
     """
     Sends periodic messages to the Twitch chat at specified intervals.
 
@@ -13,6 +16,7 @@ async def send_periodic_messages(bot, interval_hours=1, message="Remember to sta
         for channel in bot.initial_channels:
             await bot.get_channel(channel).send(message)
 
+
 async def start_scheduler(bot):
     """
     Starts the scheduler for sending periodic messages.
@@ -21,4 +25,3 @@ async def start_scheduler(bot):
     """
     # You can adjust the interval and message as needed
     asyncio.create_task(send_periodic_messages(bot, 2, "TEST MESSAGE"))
-

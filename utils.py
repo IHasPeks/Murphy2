@@ -1,6 +1,7 @@
 # utils.py
 # Utility functions for MurphyAI Twitch Chat Bot
 
+
 def format_queue(queue):
     """
     Formats the queue list into a string for display.
@@ -12,6 +13,7 @@ def format_queue(queue):
         return "The queue is currently empty."
     return ", ".join(queue)
 
+
 def sanitize_message(message):
     """
     Sanitizes a message to prevent command injection or other malicious content.
@@ -20,7 +22,8 @@ def sanitize_message(message):
     :return: A sanitized version of the message.
     """
     # For simplicity, we'll just replace problematic characters. This can be expanded based on requirements.
-    return message.replace('\n', '').replace('\r', '')
+    return message.replace("\n", "").replace("\r", "")
+
 
 def log_error(error_message):
     """
@@ -30,6 +33,7 @@ def log_error(error_message):
     """
     # Placeholder for logging to a file or using a logging framework
     print(f"ERROR: {error_message}")
+
 
 def extract_command(message_content, prefix):
     """
@@ -48,5 +52,5 @@ def extract_command(message_content, prefix):
 
     return command, args
 
-# Add any additional utility functions below
 
+# Add any additional utility functions below

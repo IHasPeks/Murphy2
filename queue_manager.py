@@ -13,7 +13,9 @@ class QueueManager:
     def leave_queue(self, user):
         if user in self.queue:
             self.queue.remove(user)
-            self.make_not_available(user)  # Automatically make a user not available when they leave the queue
+            self.make_not_available(
+                user
+            )  # Automatically make a user not available when they leave the queue
             return f"{user} has left the queue."
         else:
             return f"{user} is not in the queue."
@@ -45,6 +47,7 @@ class QueueManager:
             return "Available users: " + ", ".join(self.available_users)
         else:
             return "There are no available users at the moment."
+
 
 # Example usage
 if __name__ == "__main__":
