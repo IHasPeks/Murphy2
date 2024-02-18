@@ -27,6 +27,9 @@ class MurphyAI(commands.Bot):
         print(f"ID | {self.user_id}")
         await start_scheduler(self)
 
+    async def event_user_ban(self, channel, user):
+        await channel.send(f"Joeler {user.name} will be missed. KEKBye")
+
     async def event_message(self, message):
         if message.echo:
             return
