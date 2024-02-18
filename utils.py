@@ -46,7 +46,7 @@ def extract_command(message_content, prefix):
     if not message_content.startswith(prefix):
         return None, None
 
-    parts = message_content[len(prefix):].split()
+    parts = message_content[len(prefix) :].split()
     command = parts[0] if parts else None
     args = parts[1:] if len(parts) > 1 else []
 

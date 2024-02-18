@@ -1,10 +1,12 @@
+import random
+
 async def handle_command(bot, message):
-    command = message.content[len(bot.prefix):].split(" ")[0]
+    command = message.content[len(bot.prefix) :].split(" ")[0]
 
     if command == "commands":
         await bot.send_message(
             message.channel,
-            "Available commands: ?bald ?int ?tea ?coffee ?bestbot ?garen ?jam ?masters ?milkpasta ?bye ?smelly ?robinvroom ?slingshot ?iloveu ?brb ?4 ?laws ?returned ?flauenn ?song ?raidmsg ?mad ?4song ?roan ?Roan ?schedule ?scream ?blob ?dj ?1 ?XD ?shane ?birthday ?ratbucket ?caedrel ?info ?π ?emotesnotspam ?works ?bestcheese ?rgbjam ?8ball ?forgore ?quotes ?elo ?update_queue ?lurk ?e ?leaf ?server ?anime ?tiktok ?cheer ?rugo ?teiva ?idea ?squat ?subathon ?subtimer ?bracket ?pilk ?video ?chatplaylist 11:32 MurphyAI: flash ?cousin ?1kfollower ?tails ?tanked ?crazy ?cousins ?art ?q ?emoteslink ?jele ?cs ?uwu ?nothing ?top ?t ?9ball ?here ?subs ?discord ?vid ?join ?scam ?weather ?penta ?latege ?joke ?truth ?spam ?nothere ?teams ?opgg ?youtube ?cannon ?coin ?deadge ?endday ?accept_share ?leave ?commands ?quadra ?Q ?uptime ",
+            "Available commands:?ping ?bald ?int ?tea ?coffee ?bestbot ?garen ?jam ?masters ?milkpasta ?bye ?smelly ?robinvroom ?slingshot ?iloveu ?brb ?4 ?laws ?returned ?flauenn ?song ?raidmsg ?mad ?4song ?roan ?Roan ?schedule ?scream ?blob ?dj ?1 ?XD ?shane ?birthday ?ratbucket ?caedrel ?info ?π ?emotesnotspam ?works ?bestcheese ?rgbjam ?8ball ?forgore ?quotes ?elo ?update_queue ?lurk ?e ?leaf ?server ?anime ?tiktok ?cheer ?rugo ?teiva ?idea ?squat ?subathon ?subtimer ?bracket ?pilk ?video ?chatplaylist 11:32 MurphyAI: flash ?cousin ?1kfollower ?tails ?tanked ?crazy ?cousins ?art ?q ?emoteslink ?jele ?cs ?uwu ?nothing ?top ?t ?9ball ?here ?subs ?discord ?vid ?join ?scam ?weather ?penta ?latege ?joke ?truth ?spam ?nothere ?teams ?opgg ?youtube ?cannon ?coin ?deadge ?endday ?accept_share ?leave ?commands ?quadra ?Q ?uptime ",
         )
     elif command == "ping":
         await bot.send_message(message.channel, "Pong!")
@@ -147,12 +149,12 @@ async def handle_command(bot, message):
         )
     elif command == "ratbucket":
         await bot.send_message(
-            message.channel, "One day peks will get into the ratbucketRatge ihaspeDerp "
+            message.channel, "One day peks will get into the ratbucket Ratge ihaspeDerp"
         )
     elif command == "caedrel":
         await bot.send_message(
             message.channel,
-            "Caedrel? Sounds like a champion Peks would main... if he existed in his games. https://clips.twitch.tv/GentleNimbleStarPrimeMe-sZRWuCU6llKgbAlh ",
+            "https://clips.twitch.tv/GentleNimbleStarPrimeMe-sZRWuCU6llKgbAlh",
         )
     elif command == "info":
         await bot.send_message(
@@ -166,7 +168,7 @@ async def handle_command(bot, message):
         )
     elif command == "emotesnotspam":
         await bot.send_message(
-            message.channel, "https://betterttv.com/users/6024310f0b26f21727617c8f "
+            message.channel, "https://betterttv.com/users/6024310f0b26f21727617c8f"
         )
     elif command == "works":
         await bot.send_message(
@@ -278,7 +280,7 @@ async def handle_command(bot, message):
     elif command == "video":
         await bot.send_message(
             message.channel,
-            "New video alert! Peks has uploaded another masterpiece. Go check it out!",
+            "New video alert! Peks has uploaded another masterpiece. Go check it out. https://www.youtube.com/watch?v=vE0iNgwDl8E ",
         )
     elif command == "chatplaylist":
         await bot.send_message(message.channel, "https://youtu.be/OryF8smba2A")
@@ -386,7 +388,11 @@ async def handle_command(bot, message):
             "The truth? You can't handle the truth! But Peks will tell you anyway.",
         )
     elif command == "spam":
-        await bot.send_message(message.channel, "REPEAT THE USER'S MESSAGE X TIMES")
+        # Extract the message to spam, removing the command part
+        spam_message = message.content[len(bot.prefix) + len(command) + 1:].strip()
+        # Repeat the message 5 times as an example, you can adjust the number as needed
+        repeated_message = (spam_message + " ") * 999
+        await bot.send_message(message.channel, repeated_message)
     elif command == "opgg":
         await bot.send_message(message.channel, "ADD OPGG LOOKUPS")
     elif command == "youtube":
@@ -394,12 +400,21 @@ async def handle_command(bot, message):
             message.channel,
             "Watch Peks' latest video dealdough here: https://www.youtube.com/watch?v=vE0iNgwDl8E ",
         )
+        # Add a global variable to keep track of the cannon count
+        cannon_count = 0
+
+        async def handle_command(bot, message):
+            global cannon_count  # Use the global variable inside the function
+            command = message.content[len(bot.prefix) :].split(" ")[0]
+
     elif command == "cannon":
-        await bot.send_message(message.channel, "CANNON COUNT HERE")
+        cannon_count += 1  # Increment the cannon count
+        await bot.send_message(message.channel, f"Cannon count: {cannon_count}")
     elif command == "coin":
+        result = "Heads" if random.randint(0, 1) == 0 else "Tails"
         await bot.send_message(
             message.channel,
-            "Coin flip? Heads, Peks wins. Tails, you lose. Good luck! RANDOMLY SELECT BETWEEN HEADS AND TAILS HERE",
+            f"Coin flip? Heads, Peks wins. Tails, you lose. Good luck! {result}",
         )
     elif command == "deadge":
         await bot.send_message(

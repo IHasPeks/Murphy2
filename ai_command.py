@@ -5,7 +5,7 @@ openai.api_key = OPENAI_API_KEY
 
 
 async def handle_ai_command(bot, message):
-    user_message = message.content[len(bot.prefix) + len("ai "):]
+    user_message = message.content[len(bot.prefix) + len("ai ") :]
     if not user_message.strip():
         await bot.send_message(message.channel, "Please provide a message for the AI.")
         return
