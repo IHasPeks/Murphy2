@@ -3,7 +3,7 @@ from config import TWITCH_INITIAL_CHANNELS  # Import the initial channels list
 
 
 async def send_periodic_messages(
-    bot, interval_hours=1, message="Remember to stay hydrated and take breaks!"
+    bot, interval_hours, message="Remember to stay hydrated and take breaks!"
 ):
     """
     Sends periodic messages to the Twitch chat at specified intervals.
