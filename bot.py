@@ -40,30 +40,32 @@ class MurphyAI(commands.Bot):
         # Handle AI command
         if message.content.startswith(f"{TWITCH_PREFIX}ai "):
             await handle_ai_command(self, message)
+            return
 
+        # Ensure this is always called to process commands like ?join, ?leave, etc.
         await self.handle_commands(message)
 
-    @commands.command(name="join")
+    @commands.command(name="?join")
     async def join_queue(self, ctx):
         response = self.queue_manager.join_queue(ctx.author.name)
         await ctx.send(response)
 
-    @commands.command(name="leave")
+    @commands.command(name="?leave")
     async def leave_queue(self, ctx):
         response = self.queue_manager.leave_queue(ctx.author.name)
         await ctx.send(response)
 
-    @commands.command(name="queue")
+    @commands.command(name="?queue")
     async def show_queue(self, ctx):
         response = self.queue_manager.show_queue()
         await ctx.send(response)
 
-    @commands.command(name="available")
+    @commands.command(name="?available")
     async def make_available(self, ctx):
         response = self.queue_manager.make_available(ctx.author.name)
         await ctx.send(response)
 
-    @commands.command(name="notavailable")
+    @commands.command(name="?notavailable")
     async def make_not_available(self, ctx):
         response = self.queue_manager.make_not_available(ctx.author.name)
         await ctx.send(response)

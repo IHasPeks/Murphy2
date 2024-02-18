@@ -10,19 +10,18 @@ async def handle_command(bot, message):
             
             "Available commands:",
         )
+    elif command == "test":
+        await message.channel.send("test")
+
     elif command == "ping":
-        await message.channel.send( "Pong!")
+        await message.channel.send("Pong!")
     elif command == "bald":
-        await message.channel.send( "Looks like Peks forgot his wig today!")
+        await message.channel.send("Looks like Peks forgot his wig today!")
     elif command == "int":
-        await message.channel.send(
-            
-            "Peks is practicing his diving skills in-game, don't mind the score. KEKW",
+        await message.channel.send("Peks is practicing his diving skills in-game, don't mind the score. KEKW",
         )
     elif command == "tea":
-        await message.channel.send(
-            
-            "Peks prefers his tea like his gameplay, dark and intense. PauseChamp",
+        await message.channel.send("Peks prefers his tea like his gameplay, dark and intense. PauseChamp",
         )
     elif command == "bestbot":
         await message.channel.send(

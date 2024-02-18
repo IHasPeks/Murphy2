@@ -1,5 +1,5 @@
 import asyncio
-
+from config import TWITCH_INITIAL_CHANNELS  # Import the initial channels list
 
 async def send_periodic_messages(
     bot, interval_hours=1, message="Remember to stay hydrated and take breaks!"
@@ -12,8 +12,8 @@ async def send_periodic_messages(
     :param message: The message to be sent periodically.
     """
     while True:
-        await asyncio.sleep(interval_hours * 3600)  # Convert hours to seconds
-        for channel in bot.initial_channels:
+        await asyncio.sleep(interval_hours * 3600)  # Correctly convert hours to seconds
+        for channel in TWITCH_INITIAL_CHANNELS:  # Use the imported list
             await bot.get_channel(channel).send(message)
 
 
@@ -24,4 +24,4 @@ async def start_scheduler(bot):
     :param bot: The instance of the bot to use for sending messages.
     """
     # You can adjust the interval and message as needed
-    asyncio.create_task(send_periodic_messages(bot, 2, "TEST MESSAGE"))
+    asyncio.create_task(send_periodic_messages(bot, 1, "TEST MESSAGE"))
