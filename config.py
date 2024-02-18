@@ -3,8 +3,12 @@
 
 # Twitch Bot Credentials
 BOT_NICK = "MurphyAI"  # Bot's Twitch username
-BOT_TOKEN = "oauth:your_bot_token_here"  # Bot's OAuth token, get from https://twitchapps.com/tmi/
-CHANNEL = "your_channel_name_here"  # Channel name where the bot will operate
+BOT_TOKEN = "oauth:vrqm74lwywtc7i0yuefw0039jtvktm"  # Bot's OAuth token, get from https://twitchapps.com/tmi/
+TWITCH_TOKEN = BOT_TOKEN  # Add this line to define TWITCH_TOKEN
+CHANNEL = "IHasPeks"  # Channel name where the bot will operate
+TWITCH_CLIENT_ID = "bhr9s5c1j8rfn0lyvb4qszrscecism"  # Add your Twitch client ID here
+TWITCH_PREFIX = "?"  # Define the prefix for commands
+TWITCH_INITIAL_CHANNELS = ["IHasPeks"]  # List of channels the bot will join
 
 # AI Configuration
 OPENAI_API_KEY = (

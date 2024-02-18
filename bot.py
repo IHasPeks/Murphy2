@@ -1,5 +1,3 @@
-import os
-import asyncio
 from twitchio.ext import commands
 from commands import handle_command
 from scheduler import start_scheduler
