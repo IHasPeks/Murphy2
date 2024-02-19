@@ -54,9 +54,6 @@ def extract_command(message_content, prefix):
 
     return command, args
 
-
-# Add any additional utility functions below
-
 def suggest_alwase_variants(message):
     """
     Checks if the message contains the word 'always' and suggests using 'alwase' instead
@@ -84,3 +81,4 @@ def suggest_alwase_variants(message):
         suggestions.append("In the kingdom of Twitch, ALWASE reigns supreme. All hail! TriHard")
     return suggestions
 
+# Add any additional utility functions below

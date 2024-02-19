@@ -8,13 +8,12 @@ async def handle_command(bot, message):
     global cannon_count
     command = message.content[len(TWITCH_PREFIX) :].split(" ")[0]
 
-    if command == "commands":
+    if command == "help":
         await message.channel.send(
-            "Available commands:",
+            "Available commands: COMING SOON. if the command you are looking for isnt listed. it may be unavailable at this time",
         )
     elif command == "test":
         await message.channel.send("test")
-
     elif command == "ping":
         await message.channel.send("Pong!")
     elif command == "bald":
@@ -82,7 +81,7 @@ async def handle_command(bot, message):
             "1. Eat Pizza 2. Spell it alwase 3. Don't play runescape"
         )
     elif command == "returned":
-        await message.channel.send(f"{message.author.mention} is back, yippee")
+        await message.channel.send(f"{message.author.mention} is back, yippee peepoArrive")
     elif command == "flauenn":
         await message.channel.send("Chatting")
     elif command == "song":
@@ -362,7 +361,9 @@ async def handle_command(bot, message):
         await message.channel.send(
             "Uptime? Peks has been streaming for hours. Time flies when you're having fun!",
         )
+    elif command == "about":
+        await message.channel.send("Murphy2 is the eventual replacement for MurphyAI. Currently in alpha.")
     else:
         await message.channel.send(
-            "Unknown command. Type ?help for a list of commands."
+            "Unknown command. Type ?help for a list of commands. If you want to invoke the AI, The AI service is not available at this time"
         )
