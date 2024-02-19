@@ -1,6 +1,6 @@
-# MurphyAI Twitch Chat Bot
+# Murphy2 Twitch Chat Bot
 
-MurphyAI is a Python-based Twitch chat bot designed for the streamer ihaspeks. It features a variety of commands, a queue system for managing viewer participation, periodic messages for engagement, and an AI-powered response system using OpenAI's GPT.
+Murphy2 is a Python-based Twitch chat bot designed for the streamer IHasPeks. It features a variety of commands, a queue system for managing viewer participation, periodic messages for engagement, and an AI-powered response system using OpenAI's GPT.
 
 ## Local Installation
 
