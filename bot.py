@@ -32,7 +32,7 @@ class MurphyAI(commands.Bot):
         # Send a message in chat when the bot is started
         for channel in TWITCH_INITIAL_CHANNELS:
             await self.get_channel(channel).send(
-                "Murphy2 initialized. Murphy2 is in alpha and may break at anytime. See known issues here: https://github.com/IHasPeks/Murphy2/issues."
+                "Murphy2 initialized. Murphy2 is in alpha and may break at anytime. See known issues here: https://github.com/IHasPeks/Murphy2/issues. use ?about for more information"
             )
 
     async def event_message(self, message):

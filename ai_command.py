@@ -28,3 +28,5 @@ async def handle_ai_command(bot, message):
             "Sorry, I couldn't process that. Please try again later."
         )
         print(f"Error processing AI command: {e}")
+
+
