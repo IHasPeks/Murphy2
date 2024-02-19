@@ -25,4 +25,6 @@ async def start_scheduler(bot):
     :param bot: The instance of the bot to use for sending messages.
     """
     # You can adjust the interval and message as needed
-    asyncio.create_task(send_periodic_messages(bot, 1, "TEST MESSAGE ON A TIMED SCHEDULE"))
+    asyncio.create_task(
+        send_periodic_messages(bot, 1, "TEST MESSAGE ON A TIMED SCHEDULE")
+    )

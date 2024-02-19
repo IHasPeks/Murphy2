@@ -81,7 +81,9 @@ async def handle_command(bot, message):
             "1. Eat Pizza 2. Spell it alwase 3. Don't play runescape"
         )
     elif command == "returned":
-        await message.channel.send(f"{message.author.mention} is back, yippee peepoArrive")
+        await message.channel.send(
+            f"{message.author.mention} is back, yippee peepoArrive"
+        )
     elif command == "flauenn":
         await message.channel.send("Chatting")
     elif command == "song":
@@ -362,9 +364,15 @@ async def handle_command(bot, message):
             "Uptime? Peks has been streaming for hours. Time flies when you're having fun!",
         )
     elif command == "about":
-        await message.channel.send("Murphy2 is the eventual replacement for MurphyAI. Currently in alpha.")
+        await message.channel.send(
+            "Murphy2 is the eventual replacement for MurphyAI. Currently in alpha."
+        )
     elif command == "legend":
-        await message.channel.send("Check out Legend of Peks now on Steam. https://store.steampowered.com/app/2529400/Legend_of_Peks/")
+        await message.channel.send(
+            "Check out Legend of Peks now on Steam. https://store.steampowered.com/app/2529400/Legend_of_Peks/"
+        )
+    elif command == "addcommmand":
+        await message.channel.send("COMMANDS NEED TO BE ADDED MANUALLY FOR NOW.")
     else:
         await message.channel.send(
             "Unknown command. Type ?help for a list of commands. If you want to invoke the AI, The AI service is not available at this time"
