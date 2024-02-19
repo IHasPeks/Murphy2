@@ -1,8 +1,8 @@
-# MurphyAI Twitch Chat Bot
+# Murphy2 Twitch Chat Bot
 
-MurphyAI is a Python-based Twitch chat bot designed to enhance the interaction between streamers and their audience. It features a variety of commands, a queue system for managing viewer participation, periodic messages for engagement, and an AI-powered response system using OpenAI's GPT technology.
+Murphy2 is a Python-based Twitch chat bot designed for the streamer IHasPeks. It features a variety of commands, a queue system for managing viewer participation, periodic messages for engagement, and an AI-powered response system using OpenAI's GPT.
 
-## Installation
+## Local Installation
 
 1. Clone this repository to your local machine.
 2. Install the required dependencies by running `pip install -r requirements.txt` in your terminal.
@@ -12,7 +12,7 @@ MurphyAI is a Python-based Twitch chat bot designed to enhance the interaction b
     TWITCH_CLIENT_ID=your_twitch_client_id
     OPENAI_API_KEY=your_openai_api_key
     ```
-4. Update the `config.py` file with your specific settings (bot nickname, channel name, command prefix, etc.).
+4. Update the `config.py` file with your specific settings (bot nickname, channel name, command prefix, etc.). (`config.py` is not included in this repo
 
 ## Usage
 
@@ -29,11 +29,3 @@ see commands.py
 ## Scheduler
 
 The bot includes a scheduler that sends periodic messages to the chat. You can customize the message and interval in `scheduler.py`.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a pull request or open an issue if you have suggestions or encounter any problems.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
