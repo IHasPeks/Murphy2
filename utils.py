@@ -81,4 +81,15 @@ def suggest_alwase_variants(message):
         suggestions.append("In the kingdom of Twitch, ALWASE reigns supreme. All hail! TriHard")
     return suggestions
 
+def shazdm(message):
+    """
+    Checks if the message contains the phrase 'dms' and suggests a humorous response.
+
+    :param message: The message to check.
+    :return: A list containing a humorous message or an empty list if no suggestion is needed.
+    """
+    if 'dms' in message.lower():
+        return ["Did someone say dms? Remember, Murphy's dms are always open for memes and dreams."]
+    return []
+
 # Add any additional utility functions below

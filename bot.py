@@ -1,6 +1,7 @@
 import random
 from twitchio.ext import commands
 from utils import suggest_alwase_variants
+from utils import shazdm
 from commands import handle_command
 from scheduler import start_scheduler
 from queue_manager import QueueManager
@@ -71,6 +72,11 @@ class MurphyAI(commands.Bot):
         if alwase_suggestions:
             suggestion = random.choice(alwase_suggestions)
             await message.channel.send(suggestion)
+
+        dms_suggestions = shazdm(message.content)
+        if dms_suggestions:
+            dms_suggestion = random.choice(dms_suggestions)
+            await message.channel.send(dms_suggestion)
 
     @commands.command(name="join")
     async def join_queue(self, ctx):
