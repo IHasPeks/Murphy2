@@ -29,7 +29,9 @@ class MurphyAI(commands.Bot):
         self.queue_manager.start_cleanup_task(self.loop)
         # Send a message in chat when the bot is started
         for channel in TWITCH_INITIAL_CHANNELS:
-            await self.get_channel(channel).send("Murphy2 initialized. Murphy2 is in alpha and may break at anytime. See known issues here: https://github.com/IHasPeks/Murphy2/issues.")
+            await self.get_channel(channel).send(
+                "Murphy2 initialized. Murphy2 is in alpha and may break at anytime. See known issues here: https://github.com/IHasPeks/Murphy2/issues."
+            )
 
     async def event_message(self, message):
         if message.echo:
@@ -40,9 +42,15 @@ class MurphyAI(commands.Bot):
         # Process commands with TwitchIO command system and custom handlers
         await self.handle_commands(message)
         if message.content.startswith(TWITCH_PREFIX):
-            command_name = message.content[len(TWITCH_PREFIX):].split(" ")[0]
+            command_name = message.content[len(TWITCH_PREFIX) :].split(" ")[0]
             # If the command is not recognized by TwitchIO, it might be a custom command
-            if command_name not in ["join", "leave", "queue", "available", "notavailable"]:
+            if command_name not in [
+                "join",
+                "leave",
+                "queue",
+                "available",
+                "notavailable",
+            ]:
                 await handle_command(self, message)
                 return
 

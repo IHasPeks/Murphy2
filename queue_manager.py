@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import asyncio
 
+
 class QueueManager:
     def __init__(self):
         self.queue = []
@@ -10,7 +11,9 @@ class QueueManager:
         if username in self.queue:
             return f"{username}, you are already in the queue."
         self.queue.append(username)
-        return f"{username} joined the queue. Position: {self.queue.index(username) + 1}"
+        return (
+            f"{username} joined the queue. Position: {self.queue.index(username) + 1}"
+        )
 
     def leave_queue(self, username):
         if username in self.queue:
@@ -23,7 +26,10 @@ class QueueManager:
     def show_queue(self):
         if not self.queue:
             return "The queue is currently empty."
-        queue_status = "Queue: " + ", ".join(f"{user}{' (not available)' if user in self.not_available else ''}" for user in self.queue)
+        queue_status = "Queue: " + ", ".join(
+            f"{user}{' (not available)' if user in self.not_available else ''}"
+            for user in self.queue
+        )
         return queue_status
 
     def make_not_available(self, username):
@@ -41,7 +47,9 @@ class QueueManager:
     async def remove_not_available(self):
         while True:
             now = datetime.now()
-            to_remove = [user for user, time in self.not_available.items() if time <= now]
+            to_remove = [
+                user for user, time in self.not_available.items() if time <= now
+            ]
             for user in to_remove:
                 self.leave_queue(user)
             await asyncio.sleep(60)  # Check every minute

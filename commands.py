@@ -1,9 +1,12 @@
 import random
 from config import TWITCH_PREFIX
 
+cannon_count = 0
+
 
 async def handle_command(bot, message):
-    command = message.content[len(TWITCH_PREFIX):].split(" ")[0]
+    global cannon_count
+    command = message.content[len(TWITCH_PREFIX) :].split(" ")[0]
 
     if command == "commands":
         await message.channel.send(
@@ -268,7 +271,7 @@ async def handle_command(bot, message):
         )
     elif command == "cs":
         await message.channel.send(
-            "CS? In Peks's world, it stands for 'Constantly Smiling' https://imgur.com/a/lWCWvER .",
+            "CS? In Peks's world, it stands for 'Constantly Smiling' https://imgur.com/a/lWCWvER.",
         )
     elif command == "uwu":
         await message.channel.send(
@@ -320,9 +323,14 @@ async def handle_command(bot, message):
         )
     elif command == "spam":
         # Extract the message to spam, removing the command part
-        spam_message = message.content[len(bot.prefix) + len(command) + 1:].strip()
-        # Repeat the message 5 times as an example, you can adjust the number as needed
-        repeated_message = (spam_message + " ") * 999
+        spam_message = message.content[len(TWITCH_PREFIX) + len(command) + 1 :].strip()
+        # Ensure the message is under 250 characters to avoid cutting it short
+        if len(spam_message) > 250:
+            spam_message = spam_message[:247] + "..."
+        # Repeat the message as many times as possible without exceeding 500 characters
+        repeated_message = (spam_message + " ").rstrip()
+        while len(repeated_message + spam_message + " ") <= 500:
+            repeated_message += " " + spam_message
         await message.channel.send(repeated_message)
     elif command == "opgg":
         await message.channel.send("ADD OPGG LOOKUPS")
@@ -331,13 +339,7 @@ async def handle_command(bot, message):
             "Watch Peks' latest video dealdough here: https://www.youtube.com/watch?v=vE0iNgwDl8E ",
         )
     elif command == "cannon":
-        # Add a global variable to keep track of the cannon count
-        cannon_count = 0
-        cannon_count += 1  # Increment the cannon count
-
-        async def handle_command(bot, message):
-            global cannon_count  # Use the global variable inside the function
-            
+        cannon_count += 1  # Properly increment the cannon count
         await message.channel.send(f"Cannon count: {cannon_count}")
     elif command == "coin":
         result = "Heads" if random.randint(0, 1) == 0 else "Tails"
