@@ -1,4 +1,6 @@
+import random
 from twitchio.ext import commands
+from utils import suggest_alwase_variants
 from commands import handle_command
 from scheduler import start_scheduler
 from queue_manager import QueueManager
@@ -63,6 +65,12 @@ class MurphyAI(commands.Bot):
         if message.content.startswith(f"{TWITCH_PREFIX}ai "):
             await handle_ai_command(self, message)
             return
+
+        # Check for 'always' in message and suggest 'alwase' variants
+        alwase_suggestions = suggest_alwase_variants(message.content)
+        if alwase_suggestions:
+            suggestion = random.choice(alwase_suggestions)
+            await message.channel.send(suggestion)
 
     @commands.command(name="join")
     async def join_queue(self, ctx):
