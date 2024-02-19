@@ -27,10 +27,9 @@ class MurphyAI(commands.Bot):
         print(f"ID | {self.user_id}")
         await start_scheduler(self)
         self.queue_manager.start_cleanup_task(self.loop)
-
-
-    async def event_user_ban(self, channel, user):
-        await channel.send(f"Joeler {user.name} will be missed. KEKBye")
+        # Send a message in chat when the bot is started
+        for channel in TWITCH_INITIAL_CHANNELS:
+            await self.get_channel(channel).send("Murphy2 initialized. Murphy2 is in alpha and may break at anytime. See known issues here: https://github.com/IHasPeks/Murphy2/issues.")
 
     async def event_message(self, message):
         if message.echo:
@@ -72,12 +71,12 @@ class MurphyAI(commands.Bot):
         response = self.queue_manager.show_queue()
         await ctx.send(response)
 
-    @commands.command(name="available")
+    @commands.command(name="here")
     async def make_available(self, ctx):
         response = self.queue_manager.make_available(ctx.author.name)
         await ctx.send(response)
 
-    @commands.command(name="notavailable")
+    @commands.command(name="nothere")
     async def make_not_available(self, ctx):
         response = self.queue_manager.make_not_available(ctx.author.name)
         await ctx.send(response)
