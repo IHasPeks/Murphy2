@@ -361,11 +361,6 @@ async def handle_command(bot, message):
         await message.channel.send(
             "Uptime? Peks has been streaming for hours. Time flies when you're having fun!",
         )
-    elif command == "about":
-        await message.channel.send("Murphy2 is the eventual replacement for MurphyAI. Currently in alpha.")
-    
-    elif command == "addcommand":
-        await message.channel.send("COMMANDS NEED TO BE ADDED MANUALLY FOR NOW")
     else:
         await message.channel.send(
             "Unknown command. Type ?help for a list of commands. If you want to invoke the AI, The AI service is not available at this time"
