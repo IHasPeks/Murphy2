@@ -56,3 +56,9 @@ class QueueManager:
 
     def start_cleanup_task(self, loop):
         loop.create_task(self.remove_not_available())
+
+
+# prio queue
+# random teams
+# change team size
+# mod cmds for q

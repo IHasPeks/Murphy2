@@ -111,9 +111,7 @@ def shazdm(message):
     :return: A list containing a humorous message or an empty list if no suggestion is needed.
     """
     if "dms" in message.lower():
-        return [
-            "Did someone say dms? Remember, Murphy's dms are always open for memes and dreams."
-        ]
+        return ["dms? PauseChamp"]
     return []
 
 

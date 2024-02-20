@@ -1,6 +1,7 @@
 import random
 from config import TWITCH_PREFIX
 
+# variables used for commands below
 cannon_count = 0
 
 
@@ -13,11 +14,14 @@ async def handle_command(bot, message):
             "Available commands: COMING SOON. if the command you are looking for isnt listed. it may be unavailable at this time",
         )
     elif command == "test":
-        await message.channel.send("test")
+        await message.channel.send("test",
+        )
     elif command == "ping":
-        await message.channel.send("Pong!")
+        await message.channel.send("Pong!",
+        )
     elif command == "bald":
-        await message.channel.send("Looks like Peks forgot his wig today!")
+        await message.channel.send("Looks like Peks forgot his wig today!",
+        )
     elif command == "int":
         await message.channel.send(
             "Peks is practicing his diving skills in-game, don't mind the score. KEKW",
@@ -85,21 +89,25 @@ async def handle_command(bot, message):
             f"{message.author.mention} is back, yippee peepoArrive"
         )
     elif command == "flauenn":
-        await message.channel.send("Chatting")
+        await message.channel.send("Chatting",
+        )
     elif command == "song":
-        await message.channel.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ ")
+        await message.channel.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        )
     elif command == "raidmsg":
         await message.channel.send(
-            "ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ",
+            "ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce ihaspeKid ihaspePet ihaspeBounce ihaspeKid ihaspePet BALD DOGGO RAID ihaspeBounce",
         )
     elif command == "mad":
         await message.channel.send(
             "TrollFace mad? Never. Peks is the epitome of calm and collected. *Table flip*",
         )
     elif command == "4song":
-        await message.channel.send("https://www.youtube.com/watch?v=u8ccGjar4Es")
+        await message.channel.send("https://www.youtube.com/watch?v=u8ccGjar4Es",
+        )
     elif command == "roan":
-        await message.channel.send("Woan is vewy UwU Gayge PogPlanting")
+        await message.channel.send("Woan is vewy UwU Gayge PogPlanting",
+        )
     elif command == "Roan":
         await message.channel.send(
             "you have found Roan's secret command. Roan is amazing peepoLove UwU",
@@ -121,14 +129,17 @@ async def handle_command(bot, message):
             "Number one in our hearts and occasionally in the game."
         )
     elif command == "XD":
-        await message.channel.send("XD indeed. TrollFace mad?XD")
+        await message.channel.send("XD indeed. TrollFace mad?XD",
+        )
     elif command == "shane":
-        await message.channel.send("shane found a bug in discord POGGERS ")
+        await message.channel.send("shane found a bug in discord POGGERS",
+        )
     elif command == "birthday":
-        await message.channel.send("https://www.youtube.com/watch?v=wC4y4b8iyR0")
+        await message.channel.send("https://www.youtube.com/watch?v=wC4y4b8iyR0",
+        )
     elif command == "ratbucket":
         await message.channel.send(
-            "One day peks will get into the ratbucket Ratge ihaspeDerp"
+            "One day peks will get into the ratbucket Ratge ihaspeDerp",
         )
     elif command == "caedrel":
         await message.channel.send(
@@ -235,9 +246,11 @@ async def handle_command(bot, message):
             "New video alert! Peks has uploaded another masterpiece. Go check it out. https://www.youtube.com/watch?v=vE0iNgwDl8E ",
         )
     elif command == "chatplaylist":
-        await message.channel.send("https://youtu.be/OryF8smba2A")
+        await message.channel.send("https://youtu.be/OryF8smba2A",
+        )
     elif command == "flash":
-        await message.channel.send("Thats an NA flash there bro KEKW ")
+        await message.channel.send("Thats an NA flash there bro KEKW",
+        )
     elif command == "cousin":
         await message.channel.send(
             "okayCousin BedgeCousin comfycousin CoolCousin cousin cousins cousint FarAwayCousin HeyCousin MadCousin POGCousin SadCousin StrongCousin WeirdCousin WeirdPizzaCousin zazacousin ratin CuteCousin WeirdCousingers ",
@@ -289,7 +302,8 @@ async def handle_command(bot, message):
             "T for Tryhard. Peks's middle name when it comes to gaming.",
         )
     elif command == "9ball":
-        await message.channel.send("what is 9ball? use ?8ball instead")
+        await message.channel.send("what is 9ball? use ?8ball instead",
+        )
     elif command == "subs":
         await message.channel.send(
             "Subs, assemble! Your support makes Peks's day, every day."
@@ -373,7 +387,9 @@ async def handle_command(bot, message):
         )
     elif command == "addcommmand":
         await message.channel.send("COMMANDS NEED TO BE ADDED MANUALLY FOR NOW.")
-    else:
+    elif command == "copypasta":
         await message.channel.send(
-            "Unknown command. Type ?help for a list of commands. If you want to invoke the AI, The AI service is not available at this time"
+            "Hello everyone welcome back to the chat my dudes how's everyone doing today i myself am doing quite frankly a little weird to be honest because i have just played a game with a rek'sai who was bug abusing now i don't fully understand how this bug works and i also don't really want to be promoting the bug either but i would like to shed some light upon it so that riot might notice it in order to fix it because quite frankly it is absolutely disgusting now there might also be a similar bug with corki from what the rek'sai has told me in game but this video isn't about corki it's about rek'sai now what this bug involves is rek'sai e her burrow unborrow and collector now what the bug actually does is it brings the target down to five percent hp and the weird thing about it is if the target is not killed the target will regen to one hundred persent hp as shown here by the lee sin and the even weirder thing is that the bug can actually proc on rek'sai herself as you can see here as well rek'sai is regening to one hundred percent hp as if she had war mogs without war mogs so it is it is a fucking baffling bug to be honest it is completely game breaking and i am honestly quite baffled at the fact that it's actually in the game now it works on from what i've seen literally everything jungle camps minions champions baron dragon quite literally everything and it is so stupid so yeah i don't know riot please for fuck sake get your shit together fix your damn game and yeah i don't know this is just fuckin stupid but yeah as you can see it works on rek'sai as well uh she just randomly loses like all of her hp apart from five percent and then fully regens it back up i don't know man it's fuckin stupid anyway either way i stream four days a week on down on twitch.tv/ihaspeks so please if you liked the video consider liking subscribing um my videos have been fairly all over the place recently i do apologize about that i i'm i know i've been fairly busy but yeah um yeah do go check out the twitch if you want to see some more live content and with that said do have a good evening good night good sleep and i will talk to all you amazing people next time buh bye"
         )
+    else:
+        await message.channel.send("Waiting for AI Response")

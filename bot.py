@@ -54,18 +54,15 @@ class MurphyAI(commands.Bot):
                 "available",
                 "notavailable",
             ]:
-                await handle_command(self, message)
-                return
 
-        # Handle commands
-        if message.content.startswith(TWITCH_PREFIX):
-            await handle_command(self, message)
-            return
+                # Handle commands
+                if message.content.startswith(TWITCH_PREFIX):
+                    await handle_command(self, message)
 
-        # Handle AI command
-        if message.content.startswith(f"{TWITCH_PREFIX}ai "):
-            await handle_ai_command(self, message)
-            return
+                # Handle AI command
+                if message.content.startswith(f"{TWITCH_PREFIX}ai "):
+                    await handle_ai_command(self, message)
+                    return
 
         # Check for 'always' in message and suggest 'alwase' variants
         alwase_suggestions = suggest_alwase_variants(message.content)
