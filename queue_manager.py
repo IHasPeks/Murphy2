@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import asyncio
+import random
 
 
 class QueueManager:
@@ -57,6 +58,20 @@ class QueueManager:
     def start_cleanup_task(self, loop):
         loop.create_task(self.remove_not_available())
 
+
+    def shuffle_teams(self):
+        if len(self.queue) < 2:
+            return "Not enough players in the queue to form two teams of 5."
+
+        random.shuffle(self.queue)
+        team1 = self.queue[:5]
+        team2 = self.queue[5:10]
+
+        team1_names = ', '.join(team1)
+        team2_names = ', '.join(team2)
+
+        response = f"Team 1: {team1_names}\nTeam 2: {team2_names}"
+        return response
 
 # prio queue
 # random teams

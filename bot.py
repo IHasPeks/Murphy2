@@ -10,6 +10,7 @@ from config import (
     TWITCH_TOKEN,
     TWITCH_CLIENT_ID,
     TWITCH_PREFIX,
+    MOD_PREFIX,
     TWITCH_INITIAL_CHANNELS,
 )
 
@@ -21,6 +22,7 @@ class MurphyAI(commands.Bot):
             token=TWITCH_TOKEN,
             client_id=TWITCH_CLIENT_ID,
             prefix=TWITCH_PREFIX,
+            mod_prefix=MOD_PREFIX,
             initial_channels=TWITCH_INITIAL_CHANNELS,
         )
         self.queue_manager = QueueManager()
@@ -99,7 +101,15 @@ class MurphyAI(commands.Bot):
     async def make_not_available(self, ctx):
         response = self.queue_manager.make_not_available(ctx.author.name)
         await ctx.send(response)
-
+    
+    @commands.command(name="shuffle")
+    async def shuffle_queue(self, ctx):
+        response = self.queue_manager.shuffle_teams()
+        # Split the response into two parts based on the newline character
+        team1_response, team2_response = response.split('\n')
+        # Send each part as a separate message
+        await ctx.send(team1_response)
+        await ctx.send(team2_response)
 
 if __name__ == "__main__":
     bot = MurphyAI()
