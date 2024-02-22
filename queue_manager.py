@@ -7,13 +7,18 @@ class QueueManager:
     def __init__(self):
         self.queue = []
         self.not_available = {}
+        self.team_size = 5  # Default team size
+
+    def set_team_size(self, size):
+        self.team_size = size
+        return f"Team size set to {size}."
 
     def join_queue(self, username):
         if username in self.queue:
-            return f"{username}, you are already in the queue."
+            return f"{username}, you are already in queue."
         self.queue.append(username)
         return (
-            f"{username} joined the queue. Position: {self.queue.index(username) + 1}"
+            f"{username} joined queue. Pos: {self.queue.index(username) + 1}"
         )
 
     def leave_queue(self, username):
@@ -21,12 +26,12 @@ class QueueManager:
             self.queue.remove(username)
             if username in self.not_available:
                 del self.not_available[username]
-            return f"{username}, you have been removed from the queue."
-        return f"{username}, you were not in the queue."
+            return f"{username}, you have left queue."
+        return f"{username}, you were not in queue."
 
     def show_queue(self):
         if not self.queue:
-            return "The queue is currently empty."
+            return "Queue is empty."
         queue_status = "Queue: " + ", ".join(
             f"{user}{' (not available)' if user in self.not_available else ''}"
             for user in self.queue
@@ -36,13 +41,13 @@ class QueueManager:
     def make_not_available(self, username):
         if username in self.queue:
             self.not_available[username] = datetime.now() + timedelta(hours=1)
-            return f"{username} is now marked as not available."
-        return f"{username} is not in the queue."
+            return f"{username} is marked as away, retype ?here during the hour or you'll be autoremoved."
+        return f"{username} is not in queue."
 
     def make_available(self, username):
         if username in self.not_available:
             del self.not_available[username]
-            return f"{username} is now available."
+            return f"{username} is marked as here."
         return f"{username} was not marked as not available."
 
     async def remove_not_available(self):
@@ -60,12 +65,12 @@ class QueueManager:
 
 
     def shuffle_teams(self):
-        if len(self.queue) < 2:
-            return "Not enough players in the queue to form two teams of 5."
+        if len(self.queue) < self.team_size * 2:
+            return "Failed, Not enough players. Is team size set correctly?."
 
         random.shuffle(self.queue)
-        team1 = self.queue[:5]
-        team2 = self.queue[5:10]
+        team1 = self.queue[:self.team_size]
+        team2 = self.queue[self.team_size:self.team_size*2]
 
         team1_names = ', '.join(team1)
         team2_names = ', '.join(team2)
@@ -74,6 +79,5 @@ class QueueManager:
         return response
 
 # prio queue
-# random teams
 # change team size
 # mod cmds for q

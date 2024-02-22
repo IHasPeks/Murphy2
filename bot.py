@@ -77,6 +77,15 @@ class MurphyAI(commands.Bot):
             dms_suggestion = random.choice(dms_suggestions)
             await message.channel.send(dms_suggestion)
 
+    @commands.command(name="teamsize")
+    async def set_team_size(self, ctx, size: int):
+        if size < 1:
+            await ctx.send("Team size must be at least 1.")
+            return
+
+        response = self.queue_manager.set_team_size(size)
+        await ctx.send(response)
+
     @commands.command(name="join")
     async def join_queue(self, ctx):
         response = self.queue_manager.join_queue(ctx.author.name)
@@ -105,11 +114,13 @@ class MurphyAI(commands.Bot):
     @commands.command(name="shuffle")
     async def shuffle_queue(self, ctx):
         response = self.queue_manager.shuffle_teams()
-        # Split the response into two parts based on the newline character
-        team1_response, team2_response = response.split('\n')
-        # Send each part as a separate message
-        await ctx.send(team1_response)
-        await ctx.send(team2_response)
+        if '\n' in response:
+            team1_response, team2_response = response.split('\n')
+            await ctx.send(team1_response)
+            await ctx.send(team2_response)
+        else:
+            # If the response does not contain a newline, it means there was an error or a different message format.
+            await ctx.send(response)
 
 if __name__ == "__main__":
     bot = MurphyAI()
