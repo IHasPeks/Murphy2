@@ -69,7 +69,11 @@ class MurphyAI(commands.Bot):
 
     @commands.command(name="q")
     async def show_queue(self, ctx):
-        await ctx.send(self.queue_manager.show_queue())
+        main_queue_msg, overflow_queue_msg = self.queue_manager.show_queue()
+        await ctx.send(main_queue_msg)
+        # Check if the overflow queue message is not just the default empty message before sending
+        if overflow_queue_msg != "Overflow Queue is empty.":
+            await ctx.send(overflow_queue_msg)
 
     @commands.command(name="here")
     async def make_available(self, ctx):
