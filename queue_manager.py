@@ -5,7 +5,7 @@ import random
 
 class QueueManager:
     def __init__(self):
-        self.queue = []
+        self.queue = ["IHasPeks"]
         self.not_available = {}
         self.team_size = 5  # Default team size
 
@@ -28,6 +28,25 @@ class QueueManager:
                 del self.not_available[username]
             return f"{username}, you have left queue."
         return f"{username}, you were not in queue."
+
+    def force_kick(self, username):
+        username_lower = username.lower()  # Convert to lowercase
+        # Check and remove from queue using the lowercase username
+        if username_lower in [user.lower() for user in self.queue]:
+            self.queue.remove(username_lower)
+            # Check and delete from not_available using the lowercase username
+            if username_lower in self.not_available:
+                del self.not_available[username_lower]
+            return f"{username} kicked from queue."
+        return f"{username} not found in queue."
+
+    def force_join(self, username):
+        username_lower = username.lower()  # Convert to lowercase
+        # Check if the lowercase username is not in the lowercase version of the queue
+        if username_lower not in [user.lower() for user in self.queue]:
+            self.queue.append(username_lower)  # Add the lowercase username
+            return f"{username} forcefully added to the queue."
+        return f"{username} is already in queue."
 
     def show_queue(self):
         if not self.queue:
@@ -79,5 +98,4 @@ class QueueManager:
         return response
 
 # prio queue
-# change team size
 # mod cmds for q

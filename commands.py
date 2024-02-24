@@ -153,10 +153,6 @@ async def handle_command(bot, message):
         await message.channel.send(
             "3.14159... Peks's favorite number because it's the number of seconds he's spent on a grey screen on league.",
         )
-    elif command == "emotesnotspam":
-        await message.channel.send(
-            "https://betterttv.com/users/6024310f0b26f21727617c8f"
-        )
     elif command == "works":
         await message.channel.send(
             "It works! Just like Peks's charm. 60% of the time, it works every time.",
@@ -275,7 +271,7 @@ async def handle_command(bot, message):
         await message.channel.send(
             "yes peks is actively looking for any kind of commissions please tell him all about it Tomfoolery",
         )
-    elif command == "emoteslink":
+    elif command == "emotes":
         await message.channel.send(
             "Looking for emotes? Here's the link to express your Peks love in chat: 7TV link: https://7tv.app/emote-sets/645c2a418e6b5a947a6131c7 BetterTTV link: https://betterttv.com/users/6024310f0b26f21727617c8f ",
         )
