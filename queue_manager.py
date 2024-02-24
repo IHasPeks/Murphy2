@@ -7,7 +7,7 @@ class QueueManager:
     def __init__(self):
         self.queue = ["IHasPeks"]
         self.not_available = {}
-        self.team_size = 5  # Default team size
+        self.team_size = 5
 
     def set_team_size(self, size):
         self.team_size = size
@@ -17,34 +17,29 @@ class QueueManager:
         if username in self.queue:
             return f"{username}, you are already in queue."
         self.queue.append(username)
-        return (
-            f"{username} joined queue. Pos: {self.queue.index(username) + 1}"
-        )
+        return f"{username} joined queue. Pos: {len(self.queue)}"
 
     def leave_queue(self, username):
         if username in self.queue:
             self.queue.remove(username)
-            if username in self.not_available:
-                del self.not_available[username]
+            self.not_available.pop(username, None)
             return f"{username}, you have left queue."
         return f"{username}, you were not in queue."
 
     def force_kick(self, username):
-        username_lower = username.lower()  # Convert to lowercase
-        # Check and remove from queue using the lowercase username
-        if username_lower in [user.lower() for user in self.queue]:
-            self.queue.remove(username_lower)
-            # Check and delete from not_available using the lowercase username
-            if username_lower in self.not_available:
-                del self.not_available[username_lower]
+        username_lower = username.lower()
+        queue_lower = [user.lower() for user in self.queue]
+        if username_lower in queue_lower:
+            actual_username = self.queue[queue_lower.index(username_lower)]
+            self.queue.remove(actual_username)
+            self.not_available.pop(username_lower, None)
             return f"{username} kicked from queue."
         return f"{username} not found in queue."
 
     def force_join(self, username):
-        username_lower = username.lower()  # Convert to lowercase
-        # Check if the lowercase username is not in the lowercase version of the queue
+        username_lower = username.lower()
         if username_lower not in [user.lower() for user in self.queue]:
-            self.queue.append(username_lower)  # Add the lowercase username
+            self.queue.append(username)
             return f"{username} forcefully added to the queue."
         return f"{username} is already in queue."
 
@@ -72,30 +67,17 @@ class QueueManager:
     async def remove_not_available(self):
         while True:
             now = datetime.now()
-            to_remove = [
-                user for user, time in self.not_available.items() if time <= now
-            ]
+            to_remove = [user for user, time in self.not_available.items() if time <= now]
             for user in to_remove:
                 self.leave_queue(user)
-            await asyncio.sleep(60)  # Check every minute
+            await asyncio.sleep(60)
 
     def start_cleanup_task(self, loop):
         loop.create_task(self.remove_not_available())
 
-
     def shuffle_teams(self):
         if len(self.queue) < self.team_size * 2:
             return "Failed, Not enough players. Is team size set correctly?."
-
         random.shuffle(self.queue)
-        team1 = self.queue[:self.team_size]
-        team2 = self.queue[self.team_size:self.team_size*2]
-
-        team1_names = ', '.join(team1)
-        team2_names = ', '.join(team2)
-
-        response = f"Team 1: {team1_names}\nTeam 2: {team2_names}"
-        return response
-
-# prio queue
-# mod cmds for q
+        team1, team2 = self.queue[:self.team_size], self.queue[self.team_size:self.team_size*2]
+        return f"Team 1: {', '.join(team1)}\nTeam 2: {', '.join(team2)}"
