@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import asyncio
 import random
 
+
 class QueueManager:
     def __init__(self):
         self.queue = ["IHasPeks"]  # Main queue
@@ -17,7 +18,7 @@ class QueueManager:
     def join_queue(self, username):
         if username in self.queue or username in self.overflow_queue:
             return f"{username}, you are already in queue."
-        
+
         # If main queue is not full, add to main queue
         if len(self.queue) < self.max_main_queue_size:
             self.queue.append(username)
@@ -72,16 +73,15 @@ class QueueManager:
     def show_queue(self):
         main_queue_msg = "Main Queue is empty."
         overflow_queue_msg = "Overflow Queue is empty."
-        
+
         if self.queue:
             main_queue_msg = "Main Queue: " + ", ".join(
-                f"{user}{' (not available)' if user in self.not_available else ''}"
-                for user in self.queue
+                f"{user}{' (not available)' if user in self.not_available else ''}" for user in self.queue
             )
-        
+
         if self.overflow_queue:
             overflow_queue_msg = "Overflow Queue: " + ", ".join(self.overflow_queue)
-        
+
         return main_queue_msg, overflow_queue_msg
 
     def make_not_available(self, username):
@@ -111,5 +111,5 @@ class QueueManager:
         if len(self.queue) < self.team_size * 2:
             return "Failed, Not enough players. Is team size set correctly?."
         random.shuffle(self.queue)
-        team1, team2 = self.queue[:self.team_size], self.queue[self.team_size:self.team_size*2]
+        team1, team2 = self.queue[: self.team_size], self.queue[self.team_size : self.team_size * 2]
         return f"Team 1: {', '.join(team1)}\nTeam 2: {', '.join(team2)}"

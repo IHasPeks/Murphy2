@@ -7,9 +7,16 @@ from queue_manager import QueueManager
 from ai_command import handle_ai_command
 from config import TWITCH_TOKEN, TWITCH_CLIENT_ID, TWITCH_PREFIX, MOD_PREFIX, TWITCH_INITIAL_CHANNELS
 
+
 class MurphyAI(commands.Bot):
     def __init__(self):
-        super().__init__(token=TWITCH_TOKEN, client_id=TWITCH_CLIENT_ID, prefix=TWITCH_PREFIX, mod_prefix=MOD_PREFIX, initial_channels=TWITCH_INITIAL_CHANNELS)
+        super().__init__(
+            token=TWITCH_TOKEN,
+            client_id=TWITCH_CLIENT_ID,
+            prefix=TWITCH_PREFIX,
+            mod_prefix=MOD_PREFIX,
+            initial_channels=TWITCH_INITIAL_CHANNELS,
+        )
         self.queue_manager = QueueManager()
 
     async def event_ready(self):
@@ -27,14 +34,14 @@ class MurphyAI(commands.Bot):
             await channel.send(f"Thanks for the raid, {user.name}! Welcome, {viewers} raiders!")
         except Exception as e:
             print(f"Failed to send raid welcome message: {e}")  # Log any errors
-        
+
     async def event_message(self, message):
         if message.echo:
             return
         print(f"Message from {message.author.name}: {message.content}")
         await self.handle_commands(message)
         if message.content.startswith(TWITCH_PREFIX):
-            command_name = message.content[len(TWITCH_PREFIX):].split(" ")[0]
+            command_name = message.content[len(TWITCH_PREFIX) :].split(" ")[0]
             if command_name not in ["join", "leave", "queue", "available", "notavailable"]:
                 await handle_command(self, message)
                 if message.content.startswith(f"{TWITCH_PREFIX}ai "):
@@ -89,19 +96,20 @@ class MurphyAI(commands.Bot):
     @commands.command(name="nothere")
     async def make_not_available(self, ctx):
         await ctx.send(self.queue_manager.make_not_available(ctx.author.name))
-    
+
     @commands.command(name="shuffle")
     async def shuffle_queue(self, ctx):
         if not ctx.author.is_mod and ctx.author.name.lower() != ctx.channel.name.lower():
             await ctx.send("Sorry, this command is restricted to moderators only.")
             return
         response = self.queue_manager.shuffle_teams()
-        if '\n' in response:
-            team1_response, team2_response = response.split('\n')
+        if "\n" in response:
+            team1_response, team2_response = response.split("\n")
             await ctx.send(team1_response)
             await ctx.send(team2_response)
         else:
             await ctx.send(response)
+
 
 if __name__ == "__main__":
     bot = MurphyAI()

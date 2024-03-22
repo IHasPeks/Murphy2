@@ -14,13 +14,16 @@ async def handle_command(bot, message):
             "Available commands: https://raw.githubusercontent.com/IHasPeks/Murphy2/main/commands.md. if the command you are looking for isnt listed. it may be unavailable at this time",
         )
     elif command == "test":
-        await message.channel.send("test",
+        await message.channel.send(
+            "test",
         )
     elif command == "ping":
-        await message.channel.send("Pong!",
+        await message.channel.send(
+            "Pong!",
         )
     elif command == "bald":
-        await message.channel.send("Looks like Peks forgot his wig today!",
+        await message.channel.send(
+            "Looks like Peks forgot his wig today!",
         )
     elif command == "int":
         await message.channel.send(
@@ -49,9 +52,7 @@ async def handle_command(bot, message):
             "Masters? Easy. Peks is on his way, just a few... hundred games more.",
         )
     elif command == "milkpasta":
-        await message.channel.send(
-            "Peks's secret recipe. Don't knock it till you try it!"
-        )
+        await message.channel.send("Peks's secret recipe. Don't knock it till you try it!")
     elif command == "bye":
         await message.channel.send(
             f"{message.author.mention} is leaving, Peks will probably miss you.",
@@ -81,18 +82,16 @@ async def handle_command(bot, message):
             "A GIGACHAD 5Head big brain person who helps me find bugs, AND who also edits emotes",
         )
     elif command == "laws":
-        await message.channel.send(
-            "1. Eat Pizza 2. Spell it alwase 3. Don't play runescape"
-        )
+        await message.channel.send("1. Eat Pizza 2. Spell it alwase 3. Don't play runescape")
     elif command == "returned":
-        await message.channel.send(
-            f"{message.author.mention} is back, yippee peepoArrive"
-        )
+        await message.channel.send(f"{message.author.mention} is back, yippee peepoArrive")
     elif command == "flauenn":
-        await message.channel.send("Chatting",
+        await message.channel.send(
+            "Chatting",
         )
     elif command == "song":
-        await message.channel.send("https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        await message.channel.send(
+            "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         )
     elif command == "raidmsg":
         await message.channel.send(
@@ -103,10 +102,12 @@ async def handle_command(bot, message):
             "TrollFace mad? Never. Peks is the epitome of calm and collected. *Table flip*",
         )
     elif command == "4song":
-        await message.channel.send("https://www.youtube.com/watch?v=u8ccGjar4Es",
+        await message.channel.send(
+            "https://www.youtube.com/watch?v=u8ccGjar4Es",
         )
     elif command == "roan":
-        await message.channel.send("Woan is vewy UwU Gayge PogPlanting",
+        await message.channel.send(
+            "Woan is vewy UwU Gayge PogPlanting",
         )
     elif command == "Roan":
         await message.channel.send(
@@ -125,17 +126,18 @@ async def handle_command(bot, message):
             "Blobbing around with Peks. It's more fun than it sounds. blobSlide blobSlide blobSlide ratJAM blobDance ratJAM GroupJAM blobDance catJAM pepeJam pepeJAMJAMJAM pepeJAMJAMJAM pepeJam AMOGUS AMOGUS AMOGUS dogePLS dogePLS dogePLS dogePLS dogePLS dogJAM dogJAM GroupJAM BANGER BANGER BANGER GroupJAM GroupJAM",
         )
     elif command == "1":
-        await message.channel.send(
-            "Number one in our hearts and occasionally in the game."
-        )
+        await message.channel.send("Number one in our hearts and occasionally in the game.")
     elif command == "XD":
-        await message.channel.send("XD indeed. TrollFace mad?XD",
+        await message.channel.send(
+            "XD indeed. TrollFace mad?XD",
         )
     elif command == "shane":
-        await message.channel.send("shane found a bug in discord POGGERS",
+        await message.channel.send(
+            "shane found a bug in discord POGGERS",
         )
     elif command == "birthday":
-        await message.channel.send("https://www.youtube.com/watch?v=wC4y4b8iyR0",
+        await message.channel.send(
+            "https://www.youtube.com/watch?v=wC4y4b8iyR0",
         )
     elif command == "ratbucket":
         await message.channel.send(
@@ -192,9 +194,7 @@ async def handle_command(bot, message):
             "Leaf it to Peks to turn over a new leaf every stream. Leaf",
         )
     elif command == "server":
-        await message.channel.send(
-            "Server? More like serv-her another win, am I right?"
-        )
+        await message.channel.send("Server? More like serv-her another win, am I right?")
     elif command == "anime":
         await message.channel.send(
             "Muercie is officially an anime enjoyer. time for an anime night with Peks? What are we watching?",
@@ -242,10 +242,12 @@ async def handle_command(bot, message):
             "New video alert! Peks has uploaded another masterpiece. Go check it out. https://www.youtube.com/watch?v=vE0iNgwDl8E ",
         )
     elif command == "chatplaylist":
-        await message.channel.send("https://youtu.be/OryF8smba2A",
+        await message.channel.send(
+            "https://youtu.be/OryF8smba2A",
         )
     elif command == "flash":
-        await message.channel.send("Thats an NA flash there bro KEKW",
+        await message.channel.send(
+            "Thats an NA flash there bro KEKW",
         )
     elif command == "cousin":
         await message.channel.send(
@@ -298,12 +300,11 @@ async def handle_command(bot, message):
             "T for Tryhard. Peks's middle name when it comes to gaming.",
         )
     elif command == "9ball":
-        await message.channel.send("what is 9ball? use ?8ball instead",
+        await message.channel.send(
+            "what is 9ball? use ?8ball instead",
         )
     elif command == "subs":
-        await message.channel.send(
-            "Subs, assemble! Your support makes Peks's day, every day."
-        )
+        await message.channel.send("Subs, assemble! Your support makes Peks's day, every day.")
     elif command == "discord":
         await message.channel.send(
             "Join Peks's Discord for more fun and games off-stream. See you there!: REPLACE THIS WITH DISCORD LINK",
@@ -321,9 +322,7 @@ async def handle_command(bot, message):
             "Weather report: It's always sunny in Peks's stream. Bring sunglasses.",
         )
     elif command == "penta":
-        await message.channel.send(
-            "Penta kill! Oh wait, that was just Peks dreaming again."
-        )
+        await message.channel.send("Penta kill! Oh wait, that was just Peks dreaming again.")
     elif command == "latege":
         await message.channel.send("ADD LATEGE TIMER HERE")
     elif command == "joke":
@@ -362,21 +361,15 @@ async def handle_command(bot, message):
             "Deadge? Even when Peks is down, he's never out. The comeback king.",
         )
     elif command == "endday":
-        await message.channel.send(
-            "End of the day? The fun doesn't stop until Peks says so."
-        )
+        await message.channel.send("End of the day? The fun doesn't stop until Peks says so.")
     elif command == "quadra":
-        await message.channel.send(
-            "Quadra kill! Peks is on fire. Can he get the penta?"
-        )
+        await message.channel.send("Quadra kill! Peks is on fire. Can he get the penta?")
     elif command == "uptime":
         await message.channel.send(
             "Uptime? Peks has been streaming for hours. Time flies when you're having fun!",
         )
     elif command == "about":
-        await message.channel.send(
-            "Murphy2 is the eventual replacement for MurphyAI. Currently in alpha."
-        )
+        await message.channel.send("Murphy2 is the eventual replacement for MurphyAI. Currently in alpha.")
     elif command == "legend":
         await message.channel.send(
             "Check out Legend of Peks now on Steam. https://store.steampowered.com/app/2529400/Legend_of_Peks/"
@@ -389,4 +382,3 @@ async def handle_command(bot, message):
         )
     else:
         return
-    
