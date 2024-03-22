@@ -1,3 +1,4 @@
+[![Pylint](https://github.com/IHasPeks/Murphy2/actions/workflows/pylint.yml/badge.svg)](https://github.com/IHasPeks/Murphy2/actions/workflows/pylint.yml)
 # Murphy2 Twitch Chat Bot
 
 Murphy2 is a Python-based Twitch chat bot designed for the streamer IHasPeks. It features a variety of commands, a queue system for managing viewer participation, periodic messages for engagement, and an AI-powered response system using OpenAI's GPT.
