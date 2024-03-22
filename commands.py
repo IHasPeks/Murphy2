@@ -11,7 +11,7 @@ async def handle_command(bot, message):
 
     if command == "help":
         await message.channel.send(
-            "Available commands: COMING SOON. if the command you are looking for isnt listed. it may be unavailable at this time",
+            "Available commands: https://raw.githubusercontent.com/IHasPeks/Murphy2/main/commands.md. if the command you are looking for isnt listed. it may be unavailable at this time",
         )
     elif command == "test":
         await message.channel.send("test",
@@ -389,3 +389,4 @@ async def handle_command(bot, message):
         )
     else:
         return
+    

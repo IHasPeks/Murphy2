@@ -21,6 +21,13 @@ class MurphyAI(commands.Bot):
         for channel in TWITCH_INITIAL_CHANNELS:
             await self.get_channel(channel).send(welcome_message)
 
+    async def event_raid(self, channel, user, viewers):
+        print(f"Raid detected from {user.name} with {viewers} viewers.")  # Add logging
+        try:
+            await channel.send(f"Thanks for the raid, {user.name}! Welcome, {viewers} raiders!")
+        except Exception as e:
+            print(f"Failed to send raid welcome message: {e}")  # Log any errors
+        
     async def event_message(self, message):
         if message.echo:
             return

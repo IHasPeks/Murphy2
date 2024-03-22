@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 import asyncio
 import random
 
-
 class QueueManager:
     def __init__(self):
         self.queue = ["IHasPeks"]  # Main queue
@@ -26,7 +25,7 @@ class QueueManager:
         else:
             # Add to overflow queue if main queue is full
             self.overflow_queue.append(username)
-            return f"{username} added to overflow queue. Pos: {len(self.overflow_queue)} in overflow"
+            return f"{username} main queue full. added to overflow. Pos: {len(self.overflow_queue)} in overflow"
 
     def leave_queue(self, username):
         if username in self.queue:
@@ -42,7 +41,7 @@ class QueueManager:
             return response
         elif username in self.overflow_queue:
             self.overflow_queue.remove(username)
-            return f"{username}, you have left the overflow queue."
+            return f"{username}, you left overflow queue."
         else:
             return f"{username}, you were not in any queue."
 
@@ -67,7 +66,7 @@ class QueueManager:
         username_lower = username.lower()
         if username_lower not in [user.lower() for user in self.queue]:
             self.queue.append(username)
-            return f"{username} forcefully added to the queue."
+            return f"{username} forcefully added to main queue."
         return f"{username} is already in queue."
 
     def show_queue(self):
