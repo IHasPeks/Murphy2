@@ -24,5 +24,7 @@ async def handle_ai_command(bot, message):
         )
         await message.channel.send(response.choices[0].message["content"])
     except Exception as e:
-        await message.channel.send("Sorry, I couldn't process that. Please try again later.")
+        await message.channel.send(
+            "Sorry, I couldn't process that. Please try again later."
+        )
         print(f"Error processing AI command: {e}")

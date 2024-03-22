@@ -1,7 +1,10 @@
 import asyncio
 import random
-from datetime import datetime, timedelta
-from config import TWITCH_INITIAL_CHANNELS, STREAM_SCHEDULE  # Import the initial channels list
+from datetime import datetime
+from config import (
+    TWITCH_INITIAL_CHANNELS,
+    STREAM_SCHEDULE,
+)  # Import the initial channels list
 
 
 async def check_stream_status(bot):
@@ -12,7 +15,9 @@ async def check_stream_status(bot):
     while True:
         now = datetime.now()
         day_of_week = now.strftime("%A").lower()  # Get the current day of the week
-        scheduled_time_str = STREAM_SCHEDULE.get(day_of_week)  # Get the scheduled time for today
+        scheduled_time_str = STREAM_SCHEDULE.get(
+            day_of_week
+        )  # Get the scheduled time for today
 
         # Check if the streamer is live using Twitch API
         is_live = True  # Placeholder for actual live check
@@ -39,9 +44,7 @@ async def check_stream_status(bot):
                 message = random.choice(early_messages)
         else:
             # No scheduled time for today, assume it's a secret stream
-            message = (
-                "Surprise! It looks like we've got a secret stream on our hands. What mysteries will Peks unveil today?"
-            )
+            message = "Surprise! It looks like we've got a secret stream on our hands. What mysteries will Peks unveil today?"
 
         if is_live:
             for channel in TWITCH_INITIAL_CHANNELS:
@@ -54,11 +57,15 @@ async def start_scheduler(bot):
     """
     Starts the scheduler for sending periodic messages and checking stream status.
     """
-    asyncio.create_task(send_periodic_messages(bot, 1, "TEST MESSAGE ON A TIMED SCHEDULE"))
+    asyncio.create_task(
+        send_periodic_messages(bot, 1, "TEST MESSAGE ON A TIMED SCHEDULE")
+    )
     asyncio.create_task(check_stream_status(bot))
 
 
-async def send_periodic_messages(bot, interval_hours, message="Remember to stay hydrated and take breaks!"):
+async def send_periodic_messages(
+    bot, interval_hours, message="Remember to stay hydrated and take breaks!"
+):
     """
     Sends periodic messages to the Twitch chat at specified intervals.
 

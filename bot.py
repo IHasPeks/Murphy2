@@ -5,7 +5,13 @@ from commands import handle_command
 from scheduler import start_scheduler
 from queue_manager import QueueManager
 from ai_command import handle_ai_command
-from config import TWITCH_TOKEN, TWITCH_CLIENT_ID, TWITCH_PREFIX, MOD_PREFIX, TWITCH_INITIAL_CHANNELS
+from config import (
+    TWITCH_TOKEN,
+    TWITCH_CLIENT_ID,
+    TWITCH_PREFIX,
+    MOD_PREFIX,
+    TWITCH_INITIAL_CHANNELS,
+)
 
 
 class MurphyAI(commands.Bot):
@@ -31,7 +37,9 @@ class MurphyAI(commands.Bot):
     async def event_raid(self, channel, user, viewers):
         print(f"Raid detected from {user.name} with {viewers} viewers.")  # Add logging
         try:
-            await channel.send(f"Thanks for the raid, {user.name}! Welcome, {viewers} raiders!")
+            await channel.send(
+                f"Thanks for the raid, {user.name}! Welcome, {viewers} raiders!"
+            )
         except Exception as e:
             print(f"Failed to send raid welcome message: {e}")  # Log any errors
 
@@ -42,7 +50,13 @@ class MurphyAI(commands.Bot):
         await self.handle_commands(message)
         if message.content.startswith(TWITCH_PREFIX):
             command_name = message.content[len(TWITCH_PREFIX) :].split(" ")[0]
-            if command_name not in ["join", "leave", "queue", "available", "notavailable"]:
+            if command_name not in [
+                "join",
+                "leave",
+                "queue",
+                "available",
+                "notavailable",
+            ]:
                 await handle_command(self, message)
                 if message.content.startswith(f"{TWITCH_PREFIX}ai "):
                     await handle_ai_command(self, message)
@@ -57,7 +71,10 @@ class MurphyAI(commands.Bot):
 
     @commands.command(name="teamsize")
     async def set_team_size(self, ctx, size: int):
-        if not ctx.author.is_mod and ctx.author.name.lower() != ctx.channel.name.lower():
+        if (
+            not ctx.author.is_mod
+            and ctx.author.name.lower() != ctx.channel.name.lower()
+        ):
             await ctx.send("Sorry, this command is restricted to moderators only.")
             return
         if size < 1:
@@ -99,7 +116,10 @@ class MurphyAI(commands.Bot):
 
     @commands.command(name="shuffle")
     async def shuffle_queue(self, ctx):
-        if not ctx.author.is_mod and ctx.author.name.lower() != ctx.channel.name.lower():
+        if (
+            not ctx.author.is_mod
+            and ctx.author.name.lower() != ctx.channel.name.lower()
+        ):
             await ctx.send("Sorry, this command is restricted to moderators only.")
             return
         response = self.queue_manager.shuffle_teams()

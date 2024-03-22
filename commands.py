@@ -52,7 +52,9 @@ async def handle_command(bot, message):
             "Masters? Easy. Peks is on his way, just a few... hundred games more.",
         )
     elif command == "milkpasta":
-        await message.channel.send("Peks's secret recipe. Don't knock it till you try it!")
+        await message.channel.send(
+            "Peks's secret recipe. Don't knock it till you try it!"
+        )
     elif command == "bye":
         await message.channel.send(
             f"{message.author.mention} is leaving, Peks will probably miss you.",
@@ -82,9 +84,13 @@ async def handle_command(bot, message):
             "A GIGACHAD 5Head big brain person who helps me find bugs, AND who also edits emotes",
         )
     elif command == "laws":
-        await message.channel.send("1. Eat Pizza 2. Spell it alwase 3. Don't play runescape")
+        await message.channel.send(
+            "1. Eat Pizza 2. Spell it alwase 3. Don't play runescape"
+        )
     elif command == "returned":
-        await message.channel.send(f"{message.author.mention} is back, yippee peepoArrive")
+        await message.channel.send(
+            f"{message.author.mention} is back, yippee peepoArrive"
+        )
     elif command == "flauenn":
         await message.channel.send(
             "Chatting",
@@ -126,7 +132,9 @@ async def handle_command(bot, message):
             "Blobbing around with Peks. It's more fun than it sounds. blobSlide blobSlide blobSlide ratJAM blobDance ratJAM GroupJAM blobDance catJAM pepeJam pepeJAMJAMJAM pepeJAMJAMJAM pepeJam AMOGUS AMOGUS AMOGUS dogePLS dogePLS dogePLS dogePLS dogePLS dogJAM dogJAM GroupJAM BANGER BANGER BANGER GroupJAM GroupJAM",
         )
     elif command == "1":
-        await message.channel.send("Number one in our hearts and occasionally in the game.")
+        await message.channel.send(
+            "Number one in our hearts and occasionally in the game."
+        )
     elif command == "XD":
         await message.channel.send(
             "XD indeed. TrollFace mad?XD",
@@ -194,7 +202,9 @@ async def handle_command(bot, message):
             "Leaf it to Peks to turn over a new leaf every stream. Leaf",
         )
     elif command == "server":
-        await message.channel.send("Server? More like serv-her another win, am I right?")
+        await message.channel.send(
+            "Server? More like serv-her another win, am I right?"
+        )
     elif command == "anime":
         await message.channel.send(
             "Muercie is officially an anime enjoyer. time for an anime night with Peks? What are we watching?",
@@ -304,7 +314,9 @@ async def handle_command(bot, message):
             "what is 9ball? use ?8ball instead",
         )
     elif command == "subs":
-        await message.channel.send("Subs, assemble! Your support makes Peks's day, every day.")
+        await message.channel.send(
+            "Subs, assemble! Your support makes Peks's day, every day."
+        )
     elif command == "discord":
         await message.channel.send(
             "Join Peks's Discord for more fun and games off-stream. See you there!: REPLACE THIS WITH DISCORD LINK",
@@ -322,7 +334,9 @@ async def handle_command(bot, message):
             "Weather report: It's always sunny in Peks's stream. Bring sunglasses.",
         )
     elif command == "penta":
-        await message.channel.send("Penta kill! Oh wait, that was just Peks dreaming again.")
+        await message.channel.send(
+            "Penta kill! Oh wait, that was just Peks dreaming again."
+        )
     elif command == "latege":
         await message.channel.send("ADD LATEGE TIMER HERE")
     elif command == "joke":
@@ -361,15 +375,21 @@ async def handle_command(bot, message):
             "Deadge? Even when Peks is down, he's never out. The comeback king.",
         )
     elif command == "endday":
-        await message.channel.send("End of the day? The fun doesn't stop until Peks says so.")
+        await message.channel.send(
+            "End of the day? The fun doesn't stop until Peks says so."
+        )
     elif command == "quadra":
-        await message.channel.send("Quadra kill! Peks is on fire. Can he get the penta?")
+        await message.channel.send(
+            "Quadra kill! Peks is on fire. Can he get the penta?"
+        )
     elif command == "uptime":
         await message.channel.send(
             "Uptime? Peks has been streaming for hours. Time flies when you're having fun!",
         )
     elif command == "about":
-        await message.channel.send("Murphy2 is the eventual replacement for MurphyAI. Currently in alpha.")
+        await message.channel.send(
+            "Murphy2 is the eventual replacement for MurphyAI. Currently in alpha."
+        )
     elif command == "legend":
         await message.channel.send(
             "Check out Legend of Peks now on Steam. https://store.steampowered.com/app/2529400/Legend_of_Peks/"

@@ -76,7 +76,8 @@ class QueueManager:
 
         if self.queue:
             main_queue_msg = "Main Queue: " + ", ".join(
-                f"{user}{' (not available)' if user in self.not_available else ''}" for user in self.queue
+                f"{user}{' (not available)' if user in self.not_available else ''}"
+                for user in self.queue
             )
 
         if self.overflow_queue:
@@ -99,7 +100,9 @@ class QueueManager:
     async def remove_not_available(self):
         while True:
             now = datetime.now()
-            to_remove = [user for user, time in self.not_available.items() if time <= now]
+            to_remove = [
+                user for user, time in self.not_available.items() if time <= now
+            ]
             for user in to_remove:
                 self.leave_queue(user)
             await asyncio.sleep(60)
@@ -111,5 +114,8 @@ class QueueManager:
         if len(self.queue) < self.team_size * 2:
             return "Failed, Not enough players. Is team size set correctly?."
         random.shuffle(self.queue)
-        team1, team2 = self.queue[: self.team_size], self.queue[self.team_size : self.team_size * 2]
+        team1, team2 = (
+            self.queue[: self.team_size],
+            self.queue[self.team_size : self.team_size * 2],
+        )
         return f"Team 1: {', '.join(team1)}\nTeam 2: {', '.join(team2)}"
