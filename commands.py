@@ -1,4 +1,5 @@
 import random
+import requests
 from config import TWITCH_PREFIX
 
 # variables used for commands below
@@ -159,7 +160,7 @@ async def handle_command(bot, message):
         await message.channel.send(
             "Looking for info? Peks's life is an open book. Mostly. Just ask him any question and he will be sure to not answer",
         )
-    elif command == "pi":
+    elif command == "π":
         await message.channel.send(
             "3.14159... Peks's favorite number because it's the number of seconds he's spent on a grey screen on league.",
         )
@@ -242,6 +243,10 @@ async def handle_command(bot, message):
     elif command == "crazy":
         await message.channel.send(
             "Crazy? i was crazy once. i locked myself in a room, a concrete room, a concrete room with chat, my chat is full of rats which make me crazy",
+        )
+    elif command == "dj":
+        await message.channel.send(
+            "peepoDJ pepeJAMJAMJAM peepoDJ pepeJam peepoDJ pepeJAMJAMJAM peepoDJ pepeJam peepoDJ pepeJAMJAMJAM peepoDJ pepeJam peepoDJ pepeJAMJAMJAM peepoDJ pepeJam peepoDJ pepeJAMJAMJAM peepoDJ pepeJam peepoDJ pepeJAMJAMJAM peepoDJ pepeJam peepoDJ pepeJAMJAMJAM peepoDJ pepeJam peepoDJ pepeJAMJAMJAM peepoDJ pepeJam"
         )
     elif command == "pilk":
         await message.channel.send(
@@ -340,7 +345,15 @@ async def handle_command(bot, message):
     elif command == "latege":
         await message.channel.send("ADD LATEGE TIMER HERE")
     elif command == "joke":
-        await message.channel.send("we are not bringing this back...")
+        if random.randint(0, 1) == 0:
+            await message.channel.send("we are not bringing this back...")
+        else:
+            joke_response = requests.get("https://icanhazdadjoke.com", headers={"Accept": "application/json"})
+            if joke_response.status_code == 200:
+                joke_data = joke_response.json()
+                await message.channel.send(joke_data["joke"])
+            else:
+                await message.channel.send("Couldn't fetch a joke at the moment. Try again later!")
     elif command == "truth":
         await message.channel.send(
             "The truth? You can't handle the truth! But Peks will tell you anyway.",
