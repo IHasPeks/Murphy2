@@ -1,6 +1,18 @@
 # utils.py
 # Utility functions for MurphyAI Twitch Chat Bot
 
+from googletrans import Translator
+
+translator = Translator()
+
+def translate_text_to_english(text):
+    try:
+        translation = translator.translate(text, dest='en')
+        return translation.text, translation.src
+    except Exception as e:
+        print(f"Error translating text: {e}")
+        return "Error translating text. Please try again later.", None
+
 
 def format_queue(queue):
     """

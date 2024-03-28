@@ -1,6 +1,7 @@
 import random
 import requests
 from config import TWITCH_PREFIX
+from utils import translate_text_to_english
 
 # variables used for commands below
 cannon_count = 0
@@ -309,10 +310,6 @@ async def handle_command(bot, message):
         await message.channel.send(
             "Top? Peks is always on top of his game. Except when he's not.",
         )
-    elif command == "t":
-        await message.channel.send(
-            "T for Tryhard. Peks's middle name when it comes to gaming.",
-        )
     elif command == "9ball":
         await message.channel.send(
             "what is 9ball? use ?8ball instead",
@@ -357,6 +354,13 @@ async def handle_command(bot, message):
         await message.channel.send(
             "The truth? You can't handle the truth! But Peks will tell you anyway.",
         )
+    elif command == "t":
+        text_to_translate = message.content[len(TWITCH_PREFIX) + len(command) + 1:].strip()
+        if not text_to_translate:
+            await message.channel.send("Couldnt translate text.")
+            return
+        translated_text, source_lang = translate_text_to_english(text_to_translate)
+        await message.channel.send(f"Translation Result:{translated_text} (Translated from {source_lang})")
     elif command == "spam":
         # Extract the message to spam, removing the command part
         spam_message = message.content[len(TWITCH_PREFIX) + len(command) + 1 :].strip()
@@ -382,6 +386,7 @@ async def handle_command(bot, message):
         await message.channel.send(
             f"Coin flip? Heads, Peks wins. Tails, you lose. Good luck! {result}",
         )
+
     elif command == "deadge":
         await message.channel.send(
             "Deadge? Even when Peks is down, he's never out. The comeback king.",
