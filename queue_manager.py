@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 import asyncio
 import random
 
-
 class QueueManager:
     def __init__(self):
         self.queue = ["IHasPeks"]  # Main queue

@@ -5,7 +5,6 @@ from config import TWITCH_PREFIX
 # variables used for commands below
 cannon_count = 0
 
-
 async def handle_command(bot, message):
     global cannon_count
     command = message.content[len(TWITCH_PREFIX) :].split(" ")[0]

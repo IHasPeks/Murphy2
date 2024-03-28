@@ -10,9 +10,10 @@ from config import (
 async def check_stream_status(bot):
     """
     Checks if the streamer is live and sends a message indicating how early or late the stream is,
-    or if it's a secret stream.
+    or if it's a secret stream. Only sends the message 3 times.
     """
-    while True:
+    message_count = 0
+    while message_count < 3:
         now = datetime.now()
         day_of_week = now.strftime("%A").lower()  # Get the current day of the week
         scheduled_time_str = STREAM_SCHEDULE.get(
@@ -49,6 +50,7 @@ async def check_stream_status(bot):
         if is_live:
             for channel in TWITCH_INITIAL_CHANNELS:
                 await bot.get_channel(channel).send(message)
+            message_count += 1
 
         await asyncio.sleep(60 * 5)  # Check every 5 minutes
 

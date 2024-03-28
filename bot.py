@@ -58,7 +58,7 @@ class MurphyAI(commands.Bot):
                 "notavailable",
             ]:
                 await handle_command(self, message)
-                if message.content.startswith(f"{TWITCH_PREFIX}ai "):
+                if message.content.startswith(f"{TWITCH_PREFIX}"):
                     await handle_ai_command(self, message)
                     return
         await self.suggest_variants(message)
@@ -98,7 +98,7 @@ class MurphyAI(commands.Bot):
     async def force_join_user(self, ctx, username: str):
         await ctx.send(self.queue_manager.force_join(username))
 
-    @commands.command(name="q")
+    @commands.command(name="Q")
     async def show_queue(self, ctx):
         main_queue_msg, overflow_queue_msg = self.queue_manager.show_queue()
         await ctx.send(main_queue_msg)
