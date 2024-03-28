@@ -13,7 +13,6 @@ from config import (
     TWITCH_INITIAL_CHANNELS,
 )
 
-
 class MurphyAI(commands.Bot):
     def __init__(self):
         super().__init__(
@@ -34,15 +33,6 @@ class MurphyAI(commands.Bot):
         for channel in TWITCH_INITIAL_CHANNELS:
             await self.get_channel(channel).send(welcome_message)
 
-    async def event_raid(self, channel, user, viewers):
-        print(f"Raid detected from {user.name} with {viewers} viewers.")  # Add logging
-        try:
-            await channel.send(
-                f"Thanks for the raid, {user.name}! Welcome, {viewers} raiders!"
-            )
-        except Exception as e:
-            print(f"Failed to send raid welcome message: {e}")  # Log any errors
-
     async def event_message(self, message):
         if message.echo:
             return
@@ -58,7 +48,7 @@ class MurphyAI(commands.Bot):
                 "notavailable",
             ]:
                 await handle_command(self, message)
-                if message.content.startswith(f"{TWITCH_PREFIX}"):
+                if message.content.startswith(f"{TWITCH_PREFIX}ai "):
                     await handle_ai_command(self, message)
                     return
         await self.suggest_variants(message)
