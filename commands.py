@@ -5,6 +5,8 @@ from utils import translate_text_to_english
 
 # variables used for commands below
 cannon_count = 0
+quadra_count = 0
+penta_count = 0
 
 async def handle_command(bot, message):
     global cannon_count
@@ -335,8 +337,9 @@ async def handle_command(bot, message):
             "Weather report: It's always sunny in Peks's stream. Bring sunglasses.",
         )
     elif command == "penta":
+        penta_count += 1
         await message.channel.send(
-            "Penta kill! Oh wait, that was just Peks dreaming again."
+            f"Penta kill! Count: {penta_count}"
         )
     elif command == "latege":
         await message.channel.send("ADD LATEGE TIMER HERE")
@@ -396,8 +399,9 @@ async def handle_command(bot, message):
             "End of the day? The fun doesn't stop until Peks says so."
         )
     elif command == "quadra":
+        quadra_count += 1
         await message.channel.send(
-            "Quadra kill! Peks is on fire. Can he get the penta?"
+            f"Quadra kill! Peks is on fire. Can he get the penta? Quadra count: {quadra_count}"
         )
     elif command == "uptime":
         await message.channel.send(
