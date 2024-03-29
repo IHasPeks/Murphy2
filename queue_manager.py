@@ -8,7 +8,7 @@ class QueueManager:
         self.overflow_queue = []  # Overflow queue
         self.not_available = {}
         self.team_size = 5  # Default team size
-        self.max_main_queue_size = 2  # Maximum number of people in the main queue
+        self.max_main_queue_size = 5  # Maximum number of people in the main queue
 
     def set_team_size(self, size):
         self.team_size = size
@@ -51,6 +51,22 @@ class QueueManager:
             self.queue.append(moved_user)
             return f"{moved_user} moved from overflow to main queue."
         return None
+    
+    def move_user_up(self, username):
+        if username in self.queue:
+            index = self.queue.index(username)
+            if index > 0:
+                self.queue[index], self.queue[index - 1] = self.queue[index - 1], self.queue[index]
+                return f"{username} moved up in the queue."
+        return f"{username} could not be moved up in the queue."
+
+    def move_user_down(self, username):
+        if username in self.queue:
+            index = self.queue.index(username)
+            if index < len(self.queue) - 1:
+                self.queue[index], self.queue[index + 1] = self.queue[index + 1], self.queue[index]
+                return f"{username} moved down in the queue."
+        return f"{username} could not be moved down in the queue."
 
     def force_kick(self, username):
         username_lower = username.lower()

@@ -29,7 +29,7 @@ class MurphyAI(commands.Bot):
         print(f"ID | {self.user_id}")
         await start_scheduler(self)
         self.queue_manager.start_cleanup_task(self.loop)
-        welcome_message = "Murphy2 initialized. Murphy2 is in alpha and may break at anytime. See known issues here: https://github.com/IHasPeks/Murphy2/issues. use ?about for more information"
+        welcome_message = "Murphy2 initialized. Murphy2 is in alpha and may break anytime. See known issues here: https://github.com/IHasPeks/Murphy2/issues. use ?about for more info"
         for channel in TWITCH_INITIAL_CHANNELS:
             await self.get_channel(channel).send(welcome_message)
 
@@ -40,17 +40,10 @@ class MurphyAI(commands.Bot):
         await self.handle_commands(message)
         if message.content.startswith(TWITCH_PREFIX):
             command_name = message.content[len(TWITCH_PREFIX) :].split(" ")[0]
-            if command_name not in [
-                "join",
-                "leave",
-                "queue",
-                "available",
-                "notavailable",
-            ]:
-                await handle_command(self, message)
-                if message.content.startswith(f"{TWITCH_PREFIX}ai "):
-                    await handle_ai_command(self, message)
-                    return
+            await handle_command(self, message)
+            if message.content.startswith(f"{TWITCH_PREFIX}ai "):
+                await handle_ai_command(self, message)
+                return
         await self.suggest_variants(message)
 
     async def suggest_variants(self, message):
@@ -82,11 +75,31 @@ class MurphyAI(commands.Bot):
 
     @commands.command(name="fleave")
     async def force_kick_user(self, ctx, username: str):
+        if not ctx.author.is_mod:
+            await ctx.send("Sorry, this command is restricted to moderators only.")
+            return
         await ctx.send(self.queue_manager.force_kick(username))
 
     @commands.command(name="fjoin")
     async def force_join_user(self, ctx, username: str):
+        if not ctx.author.is_mod:
+            await ctx.send("Sorry, this command is restricted to moderators only.")
+            return
         await ctx.send(self.queue_manager.force_join(username))
+
+    @commands.command(name="moveup")
+    async def move_user_up_command(self, ctx, username: str):
+        if not ctx.author.is_mod:
+            await ctx.send("Sorry, this command is restricted to moderators only.")
+            return
+        await ctx.send(self.queue_manager.move_user_up(username))
+
+    @commands.command(name="movedown")
+    async def move_user_down_command(self, ctx, username: str):
+        if not ctx.author.is_mod:
+            await ctx.send("Sorry, this command is restricted to moderators only.")
+            return
+        await ctx.send(self.queue_manager.move_user_down(username))
 
     @commands.command(name="Q")
     async def show_queue(self, ctx):
@@ -106,10 +119,7 @@ class MurphyAI(commands.Bot):
 
     @commands.command(name="shuffle")
     async def shuffle_queue(self, ctx):
-        if (
-            not ctx.author.is_mod
-            and ctx.author.name.lower() != ctx.channel.name.lower()
-        ):
+        if not ctx.author.is_mod:
             await ctx.send("Sorry, this command is restricted to moderators only.")
             return
         response = self.queue_manager.shuffle_teams()
