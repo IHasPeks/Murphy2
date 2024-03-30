@@ -10,6 +10,8 @@ penta_count = 0
 
 async def handle_command(bot, message):
     global cannon_count
+    global quadra_count
+    global penta_count
     command = message.content[len(TWITCH_PREFIX) :].split(" ")[0]
 
     if command == "help":
@@ -423,3 +425,4 @@ async def handle_command(bot, message):
         )
     else:
         return
+    
