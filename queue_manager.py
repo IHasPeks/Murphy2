@@ -122,6 +122,12 @@ class QueueManager:
                 self.leave_queue(user)
             await asyncio.sleep(60)
 
+    def clear_queues(self):
+        self.queue.clear()  # Clear the main queue
+        self.overflow_queue.clear()  # Clear the overflow queue
+        self.queue.append("IHasPeks")  # Add user IHasPeks to the queue
+        return "All queues have been cleared."
+
     def start_cleanup_task(self, loop):
         loop.create_task(self.remove_not_available())
 
