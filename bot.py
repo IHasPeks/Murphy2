@@ -39,7 +39,6 @@ class MurphyAI(commands.Bot):
         print(f"Message from {message.author.name}: {message.content}")
         await self.handle_commands(message)
         if message.content.startswith(TWITCH_PREFIX):
-            command_name = message.content[len(TWITCH_PREFIX) :].split(" ")[0]
             await handle_command(self, message)
             if message.content.startswith(f"{TWITCH_PREFIX}ai "):
                 await handle_ai_command(self, message)
@@ -129,6 +128,14 @@ class MurphyAI(commands.Bot):
             await ctx.send(team2_response)
         else:
             await ctx.send(response)
+
+    @commands.command(name="clearqueue")
+    async def clear_queue_command(self, ctx):
+        if not ctx.author.is_mod:
+            await ctx.send("Sorry, this command is restricted to moderators only.")
+            return
+        message = self.queue_manager.clear_queues()
+        await ctx.send(message)
 
 
 if __name__ == "__main__":
