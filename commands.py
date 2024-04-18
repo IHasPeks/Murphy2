@@ -365,7 +365,7 @@ async def handle_command(bot, message):
             await message.channel.send("Couldnt translate text.")
             return
         translated_text, source_lang = translate_text_to_english(text_to_translate)
-        await message.channel.send(f"Translation Result:{translated_text} (Translated from {source_lang})")
+        await message.channel.send(f"Translation Result: {translated_text} (Translated from {source_lang})")
     elif command == "spam":
         # Extract the message to spam, removing the command part
         spam_message = message.content[len(TWITCH_PREFIX) + len(command) + 1 :].strip()
