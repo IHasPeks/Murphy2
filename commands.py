@@ -425,4 +425,3 @@ async def handle_command(bot, message):
         )
     else:
         return
-    
