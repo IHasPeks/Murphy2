@@ -2,24 +2,29 @@ from datetime import datetime, timedelta
 import asyncio
 import random
 
+
 class QueueManager:
     def __init__(self):
         self.queue = ["IHasPeks"]  # Main queue
         self.overflow_queue = []  # Overflow queue
         self.not_available = {}
         self.team_size = 5  # Default team size
-        self.max_main_queue_size = 5  # Maximum number of people in the main queue
+        self.main_queue_size = 5  # Maximum number of people in the main queue
 
     def set_team_size(self, size):
         self.team_size = size
         return f"Team size set to {size}."
+
+    def set_main_queue_size(self, size):
+        self.main_queue_size = size
+        return f"Main queue size set to {size}."
 
     def join_queue(self, username):
         if username in self.queue or username in self.overflow_queue:
             return f"{username}, you are already in queue."
 
         # If main queue is not full, add to main queue
-        if len(self.queue) < self.max_main_queue_size:
+        if len(self.queue) < self.main_queue_size:
             self.queue.append(username)
             return f"{username} joined main queue. Pos: {len(self.queue)}"
         else:
@@ -46,17 +51,20 @@ class QueueManager:
             return f"{username}, you were not in any queue."
 
     def move_from_overflow_to_main(self):
-        if self.overflow_queue and len(self.queue) < self.max_main_queue_size:
+        if self.overflow_queue and len(self.queue) < self.main_queue_size:
             moved_user = self.overflow_queue.pop(0)
             self.queue.append(moved_user)
             return f"{moved_user} moved from overflow to main queue."
         return None
-    
+
     def move_user_up(self, username):
         if username in self.queue:
             index = self.queue.index(username)
             if index > 0:
-                self.queue[index], self.queue[index - 1] = self.queue[index - 1], self.queue[index]
+                self.queue[index], self.queue[index - 1] = (
+                    self.queue[index - 1],
+                    self.queue[index],
+                )
                 return f"{username} moved up in the queue."
         return f"{username} could not be moved up in the queue."
 
@@ -64,7 +72,10 @@ class QueueManager:
         if username in self.queue:
             index = self.queue.index(username)
             if index < len(self.queue) - 1:
-                self.queue[index], self.queue[index + 1] = self.queue[index + 1], self.queue[index]
+                self.queue[index], self.queue[index + 1] = (
+                    self.queue[index + 1],
+                    self.queue[index],
+                )
                 return f"{username} moved down in the queue."
         return f"{username} could not be moved down in the queue."
 

@@ -1,5 +1,8 @@
-twitchio==2.1.0
-python-dotenv==0.20.0
-apscheduler==3.9.1
-openai==0.10.2
-requests==2.27.1
+twitchio>=2.8.2
+python-dotenv>=1.0.0
+apscheduler>=3.10.4
+openai>=1.12.0
+requests>=2.31.0
+googletrans==4.0.0-rc1
+logging-handlers>=0.1.0
+psutil>=5.9.5
