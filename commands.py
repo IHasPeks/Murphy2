@@ -36,9 +36,10 @@ async def handle_command(bot, message):
     args = message.content[len(TWITCH_PREFIX) + len(command) :].strip()
 
     # Check for dynamic command first
-    dynamic_response = dynamic_commands.get_command(command)
-    if dynamic_response:
-        await message.channel.send(dynamic_response)
+    command_result = dynamic_commands.get_command(command)
+    if command_result:
+        response, command_name = command_result
+        await message.channel.send(response)
         return
 
     # Handle command addition/removal (mod only)
@@ -50,11 +51,39 @@ async def handle_command(bot, message):
             await message.channel.send("Usage: ?addcmd <command_name> <response>")
             return
         try:
-            cmd_name, cmd_response = args.split(" ", 1)
+            cmd_parts = args.split(" ", 1)
+            if len(cmd_parts) < 2:
+                await message.channel.send("Usage: ?addcmd <command_name> <response>")
+                return
+
+            cmd_name, cmd_response = cmd_parts
             result = dynamic_commands.add_command(cmd_name, cmd_response)
             await message.channel.send(result)
         except ValueError:
             await message.channel.send("Usage: ?addcmd <command_name> <response>")
+        return
+
+    # Add command with aliases
+    if command == "addalias" and (
+        message.author.is_mod
+        or message.author.name.lower() == message.channel.name.lower()
+    ):
+        if not args:
+            await message.channel.send("Usage: ?addalias <command_name> <alias1,alias2,...> <response>")
+            return
+        try:
+            parts = args.split(" ", 2)
+            if len(parts) < 3:
+                await message.channel.send("Usage: ?addalias <command_name> <alias1,alias2,...> <response>")
+                return
+
+            cmd_name, aliases_str, cmd_response = parts
+            aliases = [a.strip() for a in aliases_str.split(",") if a.strip()]
+
+            result = dynamic_commands.add_command(cmd_name, cmd_response, aliases)
+            await message.channel.send(result)
+        except ValueError:
+            await message.channel.send("Usage: ?addalias <command_name> <alias1,alias2,...> <response>")
         return
 
     if command == "delcmd" and (
@@ -70,6 +99,17 @@ async def handle_command(bot, message):
 
     if command == "listcmds":
         await message.channel.send(dynamic_commands.list_commands())
+        return
+
+    if command == "cmdinfo" and (
+        message.author.is_mod
+        or message.author.name.lower() == message.channel.name.lower()
+    ):
+        if not args:
+            await message.channel.send("Usage: ?cmdinfo <command_name>")
+            return
+        result = dynamic_commands.get_command_details(args)
+        await message.channel.send(result)
         return
 
     # Original static commands
