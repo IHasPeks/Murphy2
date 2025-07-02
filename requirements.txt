@@ -3,9 +3,10 @@ python-dotenv==1.0.0
 apscheduler==3.10.4
 openai==1.93.0
 requests==2.31.0
-googletrans
+googletrans==4.0.0rc1
 psutil==5.9.5
 setuptools==69.0.2
 wheel==0.41.2
 watchdog==3.0.0
 async-timeout==4.0.3
+aiohttp==3.9.1

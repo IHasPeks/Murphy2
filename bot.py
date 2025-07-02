@@ -16,6 +16,7 @@ from commands import handle_command
 from scheduler import start_scheduler
 from queue_manager import QueueManager
 from ai_command import handle_ai_command, start_periodic_save
+from cooldown_manager import cooldown_manager, check_cooldown
 from config import (
     TWITCH_TOKEN,
     TWITCH_CLIENT_ID,
@@ -153,14 +154,8 @@ class MurphyAI(commands.Bot):
 
     def get_command_count(self, command_name):
         """Helper to get command counts from commands module"""
-        from commands import cannon_count, quadra_count, penta_count
-        if command_name == "cannon":
-            return cannon_count
-        elif command_name == "quadra":
-            return quadra_count
-        elif command_name == "penta":
-            return penta_count
-        return 0
+        from commands import get_command_count
+        return get_command_count(command_name)
 
     def load_state(self):
         """Load bot state from disk if available"""
@@ -245,6 +240,9 @@ class MurphyAI(commands.Bot):
             from dynamic_commands import DynamicCommandManager
             dynamic_command_manager = DynamicCommandManager()
             dynamic_command_manager.start_command_watcher(self.loop)
+
+            # Start cooldown cleanup task
+            await cooldown_manager.start_cleanup_task(self.loop)
 
             welcome_message = (
                 "Murphy2 initialized. Murphy2 is in alpha and may break anytime. "

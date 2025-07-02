@@ -1,19 +1,28 @@
 from datetime import datetime, timedelta
 import asyncio
 import random
+import os
 
 
 class QueueManager:
     def __init__(self):
-        self.queue = ["IHasPeks"]  # Main queue
+        # Get default user from environment or use empty queue
+        default_user = os.getenv("DEFAULT_QUEUE_USER", "").strip()
+        self.queue = [default_user] if default_user else []  # Main queue
         self.overflow_queue = []  # Overflow queue
         self.not_available = {}
-        self.team_size = 5  # Default team size
-        self.main_queue_size = 5  # Maximum number of people in the main queue
+        self.team_size = int(os.getenv("DEFAULT_TEAM_SIZE", "5"))  # Default team size
+        self.main_queue_size = int(os.getenv("DEFAULT_QUEUE_SIZE", "5"))  # Maximum number of people in the main queue
 
     def set_team_size(self, size):
-        self.team_size = size
-        return f"Team size set to {size}."
+        # Validate team size
+        from validation_utils import validate_team_size
+        is_valid, error_msg = validate_team_size(str(size))
+        if not is_valid:
+            return error_msg
+
+        self.team_size = int(size)
+        return f"Team size set to {self.team_size}."
 
     def set_main_queue_size(self, size):
         self.main_queue_size = size
@@ -80,6 +89,12 @@ class QueueManager:
         return f"{username} could not be moved down in the queue."
 
     def force_kick(self, username):
+        # Validate username
+        from validation_utils import validate_username
+        is_valid, error_msg = validate_username(username)
+        if not is_valid:
+            return f"Invalid username: {error_msg}"
+
         username_lower = username.lower()
         queue_lower = [user.lower() for user in self.queue]
         if username_lower in queue_lower:
@@ -90,6 +105,12 @@ class QueueManager:
         return f"{username} not found in queue."
 
     def force_join(self, username):
+        # Validate username
+        from validation_utils import validate_username
+        is_valid, error_msg = validate_username(username)
+        if not is_valid:
+            return f"Invalid username: {error_msg}"
+
         username_lower = username.lower()
         if username_lower not in [user.lower() for user in self.queue]:
             self.queue.append(username)
@@ -136,7 +157,10 @@ class QueueManager:
     def clear_queues(self):
         self.queue.clear()  # Clear the main queue
         self.overflow_queue.clear()  # Clear the overflow queue
-        self.queue.append("IHasPeks")  # Add user IHasPeks to the queue
+        # Add default user if configured
+        default_user = os.getenv("DEFAULT_QUEUE_USER", "").strip()
+        if default_user:
+            self.queue.append(default_user)
         return "All queues have been cleared."
 
     def start_cleanup_task(self, loop):

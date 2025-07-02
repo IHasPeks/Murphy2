@@ -14,6 +14,10 @@ A feature-rich Twitch chat bot built with Python designed to enhance stream inte
 - **Self-Healing**: Automatic recovery from crashes with exponential backoff
 - **State Persistence**: Maintains state across restarts and crashes
 - **Remote Management**: Channel owner can control and monitor the bot via chat commands
+- **Command Cooldowns**: Prevent spam with intelligent rate limiting
+- **Input Validation**: Comprehensive validation and sanitization for security
+- **Retry Logic**: Smart retry mechanisms for external API calls
+- **Clean Architecture**: Modular design with proper separation of concerns
 
 ## Setup
 
@@ -156,6 +160,41 @@ As the channel owner, you can:
 ## License
 
 See the [LICENSE](LICENSE) file for details.
+
+## Project Structure
+
+```
+MurphyAI2/
+├── bot.py                # Main bot entry point
+├── commands.py           # Command handling with no global state
+├── ai_command.py         # AI integration with OpenAI
+├── dynamic_commands.py   # Dynamic command management
+├── queue_manager.py      # Queue system for games
+├── scheduler.py          # Task scheduling (refactored with classes)
+├── cooldown_manager.py   # Command cooldown system
+├── validation_utils.py   # Input validation and sanitization
+├── retry_utils.py        # Retry logic with exponential backoff
+├── constants.py          # Centralized constants and messages
+├── types.py              # Type definitions for better type safety
+├── config.py             # Configuration management
+├── utils.py              # Utility functions
+├── env.example           # Example environment configuration
+├── PRODUCTION.md         # Production deployment guide
+├── state/                # Persistent state storage
+└── logs/                 # Application logs
+```
+
+## Code Quality Improvements
+
+The codebase has been significantly refactored for better maintainability:
+
+- **No Global Variables**: Command counters now use proper encapsulation
+- **Type Hints**: Added throughout for better IDE support and documentation
+- **Constants Management**: All magic numbers and strings centralized
+- **Error Messages**: Standardized and consistent error responses
+- **Clean Functions**: Each function has a single responsibility
+- **Proper Logging**: Comprehensive logging throughout the application
+- **Security First**: Input validation on all user inputs
 
 ## Contributing
 

@@ -102,13 +102,21 @@ class DynamicCommandManager:
 
     def add_command(self, name: str, response: str, aliases: List[str] = None) -> str:
         """Add a new command or update existing one."""
+        # Import validation utilities
+        from validation_utils import validate_command_name, validate_command_response, sanitize_input
+
         name = name.lower().strip()
-        if not name:
-            return "Command name cannot be empty."
 
         # Validate command name
-        if not re.match(r'^[a-z0-9_]+$', name):
-            return "Command name must contain only letters, numbers, and underscores."
+        is_valid, error_msg = validate_command_name(name)
+        if not is_valid:
+            return error_msg
+
+        # Validate and sanitize response
+        response = sanitize_input(response)
+        is_valid, error_msg = validate_command_response(response)
+        if not is_valid:
+            return error_msg
 
         # Prepare command data
         command_data = {

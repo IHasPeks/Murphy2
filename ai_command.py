@@ -23,22 +23,18 @@ except Exception as e:
 # Store conversation history for each user
 user_conversations = {}
 
+# Import constants
+from constants import Numbers, Paths, Messages, Models
+
 # Rate limiting configuration
-MAX_REQUESTS_PER_MINUTE = 20
-MAX_REQUESTS_PER_USER_MINUTE = 3  # Limit per user
 request_timestamps = []
 user_request_timestamps = {}  # Keep track of per-user timestamps
 
 # Cache for recent AI responses
 response_cache = {}
-CACHE_EXPIRY = 3600  # Cache entries expire after 1 hour
-MAX_CACHE_SIZE = 100  # Maximum number of entries in the cache
 
 # Create cache directory if it doesn't exist
-CACHE_DIR = "state/ai_cache"
-os.makedirs(CACHE_DIR, exist_ok=True)
-CACHE_FILE = os.path.join(CACHE_DIR, "ai_response_cache.json")
-CONVERSATION_FILE = os.path.join(CACHE_DIR, "user_conversations.json")
+os.makedirs(Paths.AI_CACHE_DIR, exist_ok=True)
 
 def load_cache():
     """Load cached responses from disk"""
@@ -191,8 +187,9 @@ async def check_ai_health():
             return "UNAVAILABLE (Client not initialized)"
 
         # Make a simple, minimal API call to test connectivity
+        model_name = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
         response = client.chat.completions.create(
-            model="ft:gpt-4o-mini-2024-07-18:officiallysp:murphy2feb2nd2025:AwWr0fDu",
+            model=model_name,
             messages=[
                 {"role": "system", "content": "You are a health check. Respond with 'OK'."},
                 {"role": "user", "content": "Status?"}
@@ -217,6 +214,20 @@ async def check_ai_health():
 
 async def handle_ai_command(bot, message, custom_prompt=None):
     try:
+        # Import cooldown manager
+        from cooldown_manager import cooldown_manager
+
+        # Check cooldown for AI command (only for non-custom prompts)
+        if not custom_prompt:
+            is_mod = message.author.is_mod or message.author.name.lower() == message.channel.name.lower()
+            on_cooldown, remaining = cooldown_manager.is_on_cooldown('ai', message.author.name, is_mod)
+            if on_cooldown:
+                await message.channel.send(
+                    f"@{message.author.name} AI command on cooldown! "
+                    f"Please wait {remaining} seconds."
+                )
+                return
+
         # Check if OpenAI client was initialized properly
         if client is None:
             await message.channel.send("AI service is currently unavailable. Please try again later.")
@@ -241,6 +252,10 @@ async def handle_ai_command(bot, message, custom_prompt=None):
         if not prompt:
             await message.channel.send(f"Please provide a message after {TWITCH_PREFIX}ai")
             return
+
+        # Sanitize the prompt to prevent injection attacks
+        from validation_utils import sanitize_ai_prompt
+        prompt = sanitize_ai_prompt(prompt)
 
         logger.info(f"Processing AI command from {user_id}: {prompt[:50]}{'...' if len(prompt) > 50 else ''}")
 
@@ -279,10 +294,13 @@ async def handle_ai_command(bot, message, custom_prompt=None):
 
         # Make API call with timeout protection and retries
         max_retries = 2
+        # Get model from environment or use default
+        model_name = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+
         for retry in range(max_retries + 1):
             try:
                 response = client.chat.completions.create(
-                    model="ft:gpt-4o-mini-2024-07-18:officiallysp:murphy2feb2nd2025:AwWr0fDu",
+                    model=model_name,
                     messages=messages,
                     max_tokens=150,
                     temperature=0.7,
@@ -299,6 +317,11 @@ async def handle_ai_command(bot, message, custom_prompt=None):
 
                 await message.channel.send(reply)
                 logger.info(f"AI response sent to {user_id}")
+
+                # Set cooldown for AI command (only for non-custom prompts)
+                if not custom_prompt:
+                    cooldown_manager.set_cooldown('ai', message.author.name)
+
                 break  # Successfully processed, break out of retry loop
 
             except (TimeoutError, asyncio.TimeoutError):
