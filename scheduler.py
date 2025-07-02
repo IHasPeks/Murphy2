@@ -6,10 +6,9 @@ import asyncio
 import random
 import logging
 from datetime import datetime, timedelta
-from typing import Optional, List, Tuple
+from typing import Optional, List
 
 from config import TWITCH_INITIAL_CHANNELS, STREAM_SCHEDULE
-from constants import Numbers, Security
 from type_definitions import BotProtocol, ChannelName
 
 logger = logging.getLogger(__name__)
@@ -97,9 +96,9 @@ class StreamStatusChecker:
                 if channel:
                     await channel.send(message)
                 else:
-                    logger.warning(f"Failed to get channel: {channel_name}")
+                    logger.warning("Failed to get channel: %s", channel_name)
             except Exception as e:
-                logger.error(f"Error sending message to {channel_name}: {e}")
+                logger.error("Error sending message to %s: %s", channel_name, str(e))
 
 
 class PeriodicMessageSender:
@@ -147,9 +146,9 @@ class PeriodicMessageSender:
                     if channel:
                         await channel.send(message)
                     else:
-                        logger.warning(f"Failed to get channel: {channel_name}")
+                        logger.warning("Failed to get channel: %s", channel_name)
                 except Exception as e:
-                    logger.error(f"Error sending periodic message to {channel_name}: {e}")
+                    logger.error("Error sending periodic message to %s: %s", channel_name, str(e))
 
     def cancel_all(self) -> None:
         """Cancel all periodic message tasks."""

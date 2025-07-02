@@ -4,7 +4,7 @@ Retry utilities for handling API failures with exponential backoff.
 import asyncio
 import logging
 import random
-from typing import TypeVar, Callable, Optional, Union, Any
+from typing import TypeVar, Callable, Optional
 from functools import wraps
 import aiohttp
 
@@ -65,7 +65,7 @@ async def retry_with_backoff(
             last_exception = e
 
             if attempt == config.max_attempts - 1:
-                logger.error(f"All {config.max_attempts} attempts failed for {func.__name__}")
+                logger.error("All %d attempts failed for %s", config.max_attempts, func.__name__)
                 raise
 
             # Calculate delay with exponential backoff
@@ -79,8 +79,8 @@ async def retry_with_backoff(
                 delay *= (0.5 + random.random())
 
             logger.warning(
-                f"Attempt {attempt + 1}/{config.max_attempts} failed for {func.__name__}: {str(e)}. "
-                f"Retrying in {delay:.2f} seconds..."
+                "Attempt %d/%d failed for %s: %s. Retrying in %.2f seconds...",
+                attempt + 1, config.max_attempts, func.__name__, str(e), delay
             )
 
             await asyncio.sleep(delay)
@@ -131,7 +131,7 @@ class CircuitBreaker:
             if self.last_failure_time and \
                (asyncio.get_event_loop().time() - self.last_failure_time) > self.recovery_timeout:
                 self.state = 'half-open'
-                logger.info(f"Circuit breaker entering half-open state for {func.__name__}")
+                logger.info("Circuit breaker entering half-open state for %s", func.__name__)
             else:
                 raise Exception(f"Circuit breaker is open for {func.__name__}")
 
@@ -141,19 +141,19 @@ class CircuitBreaker:
             if self.state == 'half-open':
                 self.state = 'closed'
                 self.failure_count = 0
-                logger.info(f"Circuit breaker closed for {func.__name__}")
+                logger.info("Circuit breaker closed for %s", func.__name__)
 
             return result
 
-        except self.expected_exception as e:
+        except self.expected_exception:
             self.failure_count += 1
             self.last_failure_time = asyncio.get_event_loop().time()
 
             if self.failure_count >= self.failure_threshold:
                 self.state = 'open'
                 logger.error(
-                    f"Circuit breaker opened for {func.__name__} after "
-                    f"{self.failure_count} failures"
+                    "Circuit breaker opened for %s after %d failures",
+                    func.__name__, self.failure_count
                 )
 
             raise

@@ -1,3 +1,9 @@
+"""
+Queue management system for the MurphyAI Twitch bot.
+
+This module handles player queue management including main queue, overflow queue,
+team shuffling, and availability tracking.
+"""
 from datetime import datetime, timedelta
 import asyncio
 import random
@@ -5,6 +11,12 @@ import os
 
 
 class QueueManager:
+    """
+    Manages player queues for Twitch bot game organization.
+    
+    Handles main queue, overflow queue, team shuffling, and player availability
+    with automatic cleanup and validation.
+    """
     def __init__(self):
         # Get default user from environment or use empty queue
         default_user = os.getenv("DEFAULT_QUEUE_USER", "").strip()
@@ -15,6 +27,7 @@ class QueueManager:
         self.main_queue_size = int(os.getenv("DEFAULT_QUEUE_SIZE", "5"))  # Maximum number of people in the main queue
 
     def set_team_size(self, size):
+        """Set the team size for queue operations."""
         # Validate team size
         from validation_utils import validate_team_size
         is_valid, error_msg = validate_team_size(str(size))
@@ -25,10 +38,12 @@ class QueueManager:
         return f"Team size set to {self.team_size}."
 
     def set_main_queue_size(self, size):
+        """Set the maximum size of the main queue."""
         self.main_queue_size = size
         return f"Main queue size set to {size}."
 
     def join_queue(self, username):
+        """Add a user to the queue (main or overflow)."""
         if username in self.queue or username in self.overflow_queue:
             return f"{username}, you are already in queue."
 
@@ -42,6 +57,7 @@ class QueueManager:
             return f"{username} main queue full. added to overflow. Pos: {len(self.overflow_queue)} in overflow"
 
     def leave_queue(self, username):
+        """Remove a user from the queue."""
         if username in self.queue:
             self.queue.remove(username)
             # Move the first person from overflow to main queue if there's space
@@ -60,6 +76,7 @@ class QueueManager:
             return f"{username}, you were not in any queue."
 
     def move_from_overflow_to_main(self):
+        """Move a user from overflow queue to main queue if space is available."""
         if self.overflow_queue and len(self.queue) < self.main_queue_size:
             moved_user = self.overflow_queue.pop(0)
             self.queue.append(moved_user)
@@ -67,6 +84,7 @@ class QueueManager:
         return None
 
     def move_user_up(self, username):
+        """Move a user up one position in the main queue."""
         if username in self.queue:
             index = self.queue.index(username)
             if index > 0:
@@ -78,6 +96,7 @@ class QueueManager:
         return f"{username} could not be moved up in the queue."
 
     def move_user_down(self, username):
+        """Move a user down one position in the main queue."""
         if username in self.queue:
             index = self.queue.index(username)
             if index < len(self.queue) - 1:
@@ -89,6 +108,7 @@ class QueueManager:
         return f"{username} could not be moved down in the queue."
 
     def force_kick(self, username):
+        """Forcefully remove a user from the queue (moderator command)."""
         # Validate username
         from validation_utils import validate_username
         is_valid, error_msg = validate_username(username)
@@ -105,6 +125,7 @@ class QueueManager:
         return f"{username} not found in queue."
 
     def force_join(self, username):
+        """Forcefully add a user to the main queue (moderator command)."""
         # Validate username
         from validation_utils import validate_username
         is_valid, error_msg = validate_username(username)
@@ -118,6 +139,7 @@ class QueueManager:
         return f"{username} is already in queue."
 
     def show_queue(self):
+        """Display the current state of both queues."""
         main_queue_msg = "Main Queue is empty."
         overflow_queue_msg = "Overflow Queue is empty."
 
@@ -133,18 +155,21 @@ class QueueManager:
         return main_queue_msg, overflow_queue_msg
 
     def make_not_available(self, username):
+        """Mark a user as temporarily away from the queue."""
         if username in self.queue:
             self.not_available[username] = datetime.now() + timedelta(hours=1)
             return f"{username} is marked as away, retype ?here during the hour or you'll be autoremoved."
         return f"{username} is not in queue."
 
     def make_available(self, username):
+        """Mark a user as available again."""
         if username in self.not_available:
             del self.not_available[username]
             return f"{username} is marked as here."
         return f"{username} was not marked as not available."
 
     async def remove_not_available(self):
+        """Background task to automatically remove users who have been away too long."""
         while True:
             now = datetime.now()
             to_remove = [
@@ -155,6 +180,7 @@ class QueueManager:
             await asyncio.sleep(60)
 
     def clear_queues(self):
+        """Clear both the main and overflow queues."""
         self.queue.clear()  # Clear the main queue
         self.overflow_queue.clear()  # Clear the overflow queue
         # Add default user if configured
@@ -164,9 +190,11 @@ class QueueManager:
         return "All queues have been cleared."
 
     def start_cleanup_task(self, loop):
+        """Start the background cleanup task for removing inactive users."""
         loop.create_task(self.remove_not_available())
 
     def shuffle_teams(self):
+        """Shuffle the queue and create balanced teams."""
         if len(self.queue) < self.team_size * 2:
             return "Failed, Not enough players. Is team size set correctly?."
         random.shuffle(self.queue)

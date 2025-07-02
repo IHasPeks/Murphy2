@@ -1,8 +1,13 @@
+"""
+Dynamic command management for the MurphyAI Twitch bot.
+
+This module handles the creation, modification, and execution of user-defined
+dynamic commands with proper validation and persistence.
+"""
 import json
 import os
 import time
 import logging
-import re
 import asyncio
 from typing import Dict, Optional, List, Tuple
 
@@ -10,6 +15,12 @@ from typing import Dict, Optional, List, Tuple
 logger = logging.getLogger(__name__)
 
 class DynamicCommandManager:
+    """
+    Manages dynamic commands for the Twitch bot.
+    
+    Handles loading, saving, creating, and executing user-defined commands
+    with proper validation, backup, and file watching capabilities.
+    """
     def __init__(self):
         self.commands: Dict[str, Dict] = {}
         self.commands_file = "dynamic_commands.json"
@@ -26,7 +37,7 @@ class DynamicCommandManager:
         """Load commands from JSON file if it exists."""
         if os.path.exists(self.commands_file):
             try:
-                with open(self.commands_file, "r") as f:
+                with open(self.commands_file, "r", encoding='utf-8') as f:
                     data = json.load(f)
 
                 # Convert from old format if needed
@@ -49,9 +60,9 @@ class DynamicCommandManager:
                 # Record the last modified time
                 self.last_modified_time = os.path.getmtime(self.commands_file)
 
-                logger.info(f"Loaded {len(self.commands)} dynamic commands")
+                logger.info("Loaded %d dynamic commands", len(self.commands))
             except Exception as e:
-                logger.error(f"Error loading commands: {e}")
+                logger.error("Error loading commands: %s", e)
                 # Create a backup of the corrupted file
                 if os.path.exists(self.commands_file):
                     self._create_backup("corrupted")
@@ -63,14 +74,14 @@ class DynamicCommandManager:
             # Create a backup before saving
             self._create_backup("regular")
 
-            with open(self.commands_file, "w") as f:
+            with open(self.commands_file, "w", encoding='utf-8') as f:
                 json.dump(self.commands, f, indent=4)
 
             # Update the last modified time
             self.last_modified_time = os.path.getmtime(self.commands_file)
-            logger.info(f"Saved {len(self.commands)} dynamic commands")
+            logger.info("Saved %d dynamic commands", len(self.commands))
         except Exception as e:
-            logger.error(f"Error saving commands: {e}")
+            logger.error("Error saving commands: %s", e)
 
     def _create_backup(self, backup_type: str) -> None:
         """Create a backup of the commands file"""
@@ -81,7 +92,8 @@ class DynamicCommandManager:
                 backup_path = os.path.join(self.backup_dir, backup_filename)
 
                 # Copy the file content
-                with open(self.commands_file, "r") as src, open(backup_path, "w") as dst:
+                with open(self.commands_file, "r", encoding='utf-8') as src, \
+                     open(backup_path, "w", encoding='utf-8') as dst:
                     dst.write(src.read())
 
                 # Clean up old backups if there are more than 10
@@ -96,9 +108,9 @@ class DynamicCommandManager:
                     for old_file in backup_files[:-10]:
                         os.remove(old_file)
 
-                logger.info(f"Created {backup_type} command backup: {backup_filename}")
+                logger.info("Created %s command backup: %s", backup_type, backup_filename)
             except Exception as e:
-                logger.error(f"Error creating command backup: {e}")
+                logger.error("Error creating command backup: %s", e)
 
     def add_command(self, name: str, response: str, aliases: List[str] = None) -> str:
         """Add a new command or update existing one."""
@@ -289,6 +301,6 @@ class DynamicCommandManager:
                         logger.info("Commands file modified externally, reloading...")
                         self.load_commands()
             except Exception as e:
-                logger.error(f"Error watching commands file: {e}")
+                logger.error("Error watching commands file: %s", e)
 
             await asyncio.sleep(5)  # Check every 5 seconds

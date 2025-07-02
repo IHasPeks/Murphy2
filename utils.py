@@ -1,12 +1,28 @@
 # utils.py
 # Utility functions for MurphyAI Twitch Chat Bot
 
+"""
+Utility functions for the MurphyAI Twitch Chat Bot.
+
+This module contains helper functions for translation, message sanitization,
+command extraction, and various chat bot utilities.
+"""
+
 from googletrans import Translator
 
 translator = Translator()
 
 
 def translate_text_to_english(text):
+    """
+    Translate text to English using Google Translate.
+    
+    Args:
+        text (str): The text to translate
+        
+    Returns:
+        tuple: (translated_text, source_language) or error message
+    """
     try:
         translation = translator.translate(text, dest="en")
         return translation.text, translation.src

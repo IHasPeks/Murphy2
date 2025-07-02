@@ -2,8 +2,7 @@
 Type definitions and aliases for the MurphyAI Twitch bot.
 Provides better type safety and code documentation.
 """
-from typing import Dict, List, Optional, Union, Callable, Any, Tuple, TypeVar, Protocol
-from datetime import datetime
+from typing import Dict, List, Optional, Union, Callable, Any, TypeVar, Protocol
 import asyncio
 
 # Type variables
@@ -78,16 +77,12 @@ BotState = Dict[str, Union[List[str], int, Dict[str, Any]]]
 # Error types
 class BotError(Exception):
     """Base exception for bot errors."""
-    pass
 
 class ConfigurationError(BotError):
     """Raised when there's a configuration issue."""
-    pass
 
 class CommandError(BotError):
     """Raised when a command fails to execute."""
-    pass
 
 class APIError(BotError):
     """Raised when an external API call fails."""
-    pass

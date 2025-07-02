@@ -2,11 +2,12 @@
 Command handling module for the MurphyAI Twitch bot.
 Manages both static and dynamic commands with proper state management.
 """
-import random
-import requests
-import logging
 import datetime
+import logging
+import random
 from typing import Optional, Dict, Tuple
+
+import requests
 
 from config import TWITCH_PREFIX, STREAM_SCHEDULE
 from constants import Messages, Commands as CommandLists, Numbers
@@ -47,7 +48,7 @@ class CommandCounters:
         self.counters['cannon'] = cannon
         self.counters['quadra'] = quadra
         self.counters['penta'] = penta
-        logger.info(f"Command counts restored: cannon={cannon}, quadra={quadra}, penta={penta}")
+        logger.info("Command counts restored: cannon=%d, quadra=%d, penta=%d", cannon, quadra, penta)
 
 
 # Global instance of command counters

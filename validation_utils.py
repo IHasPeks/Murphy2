@@ -1,15 +1,13 @@
 """
 Input validation and sanitization utilities for the Twitch bot.
 """
-import re
 import logging
-from typing import Optional, List, Tuple
-import html
-
-logger = logging.getLogger(__name__)
+import re
+from typing import Optional, Tuple
 
 from constants import Numbers, Patterns, Commands, Security
-from type_definitions import ValidationResult
+
+logger = logging.getLogger(__name__)
 
 # Compile patterns
 COMMAND_NAME_PATTERN = re.compile(Patterns.COMMAND_NAME)
@@ -123,11 +121,11 @@ def validate_team_size(size: str) -> Tuple[bool, Optional[str]]:
     except ValueError:
         return False, "Team size must be a number"
 
-    if size_int < MIN_TEAM_SIZE:
-        return False, f"Team size must be at least {MIN_TEAM_SIZE}"
+    if size_int < Numbers.MIN_TEAM_SIZE:
+        return False, f"Team size must be at least {Numbers.MIN_TEAM_SIZE}"
 
-    if size_int > MAX_TEAM_SIZE:
-        return False, f"Team size cannot exceed {MAX_TEAM_SIZE}"
+    if size_int > Numbers.MAX_TEAM_SIZE:
+        return False, f"Team size cannot exceed {Numbers.MAX_TEAM_SIZE}"
 
     return True, None
 
@@ -143,22 +141,12 @@ def sanitize_ai_prompt(prompt: str) -> str:
         Sanitized prompt
     """
     # Basic sanitization
-    prompt = sanitize_input(prompt, MAX_MESSAGE_LENGTH)
+    prompt = sanitize_input(prompt, Numbers.MAX_MESSAGE_LENGTH)
 
-    # Remove potential command injections
-    injection_patterns = [
-        r'ignore.*previous.*instructions',
-        r'disregard.*above',
-        r'forget.*everything',
-        r'system.*prompt',
-        r'you.*are.*now',
-        r'act.*as.*if',
-        r'pretend.*you.*are',
-    ]
-
-    for pattern in injection_patterns:
+    # Remove potential command injections using patterns from constants
+    for pattern in Patterns.AI_INJECTION_PATTERNS:
         if re.search(pattern, prompt, re.IGNORECASE):
-            logger.warning(f"Potential prompt injection detected: {pattern}")
+            logger.warning("Potential prompt injection detected: %s", pattern)
             prompt = re.sub(pattern, "[FILTERED]", prompt, flags=re.IGNORECASE)
 
     return prompt
@@ -174,25 +162,14 @@ def validate_url(url: str) -> Tuple[bool, Optional[str]]:
     if not url:
         return False, "URL cannot be empty"
 
-    # Basic URL pattern
-    url_pattern = re.compile(
-        r'^https?://'  # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-        r'localhost|'  # localhost...
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-        r'(?::\d+)?'  # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE
-    )
+    # Use URL pattern from constants
+    url_pattern = re.compile(Patterns.URL, re.IGNORECASE)
 
     if not url_pattern.match(url):
         return False, "Invalid URL format"
 
-    # Check for suspicious patterns
-    suspicious_patterns = [
-        'javascript:', 'data:', 'vbscript:', 'file://'
-    ]
-
-    for pattern in suspicious_patterns:
+    # Check for suspicious patterns from constants
+    for pattern in Security.SUSPICIOUS_URL_PATTERNS:
         if pattern in url.lower():
             return False, f"URL contains suspicious pattern: {pattern}"
 
@@ -230,8 +207,8 @@ def validate_message_content(message: str, context: str = "general") -> Tuple[bo
     if not message:
         return False, "Message cannot be empty"
 
-    if len(message) > MAX_MESSAGE_LENGTH:
-        return False, f"Message too long (max {MAX_MESSAGE_LENGTH} characters)"
+    if len(message) > Numbers.MAX_MESSAGE_LENGTH:
+        return False, f"Message too long (max {Numbers.MAX_MESSAGE_LENGTH} characters)"
 
     # Check for spam patterns
     if message.count(message[0]) == len(message) and len(message) > 5:
@@ -240,12 +217,12 @@ def validate_message_content(message: str, context: str = "general") -> Tuple[bo
     # Check for excessive caps (more than 70% caps)
     if len(message) > 10:
         caps_count = sum(1 for c in message if c.isupper())
-        if caps_count / len(message) > 0.7:
+        if caps_count / len(message) > Numbers.MAX_EXCESSIVE_CAPS_RATIO:
             return False, "Message contains too many capital letters"
 
     # Check for excessive special characters
     special_count = sum(1 for c in message if not c.isalnum() and not c.isspace())
-    if special_count > len(message) * 0.5:
+    if special_count > len(message) * Numbers.MAX_SPECIAL_CHARS_RATIO:
         return False, "Message contains too many special characters"
 
     return True, None

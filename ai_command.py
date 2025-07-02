@@ -1,13 +1,21 @@
-import openai
-import logging
-import time
-import os
-import json
+"""
+AI command handling module for the MurphyAI Twitch Bot.
+
+This module handles AI chat interactions, conversation history,
+rate limiting, and response caching.
+"""
+
 import asyncio
-from datetime import datetime, timedelta
+import json
+import logging
+import os
+import time
+
+import openai
 from openai import OpenAI
-from config import OPENAI_API_KEY
-from config import TWITCH_PREFIX
+
+from config import OPENAI_API_KEY, TWITCH_PREFIX
+from constants import Numbers, Paths, Models
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -17,14 +25,11 @@ try:
     client = OpenAI(api_key=OPENAI_API_KEY)
     logger.info("OpenAI client initialized")
 except Exception as e:
-    logger.error(f"Failed to initialize OpenAI client: {e}")
+    logger.error("Failed to initialize OpenAI client: %s", e)
     client = None
 
 # Store conversation history for each user
 user_conversations = {}
-
-# Import constants
-from constants import Numbers, Paths, Messages, Models
 
 # Rate limiting configuration
 request_timestamps = []
@@ -36,69 +41,77 @@ response_cache = {}
 # Create cache directory if it doesn't exist
 os.makedirs(Paths.AI_CACHE_DIR, exist_ok=True)
 
+
 def load_cache():
     """Load cached responses from disk"""
     global response_cache
     try:
-        if os.path.exists(CACHE_FILE):
-            with open(CACHE_FILE, 'r') as f:
+        if os.path.exists(Paths.AI_CACHE_FILE):
+            with open(Paths.AI_CACHE_FILE, 'r', encoding='utf-8') as f:
                 data = json.load(f)
                 # Filter out expired entries
                 current_time = time.time()
                 response_cache = {
                     k: v for k, v in data.items()
-                    if v.get('timestamp', 0) + CACHE_EXPIRY > current_time
+                    if v.get('timestamp', 0) + Numbers.CACHE_EXPIRY_SECONDS > current_time
                 }
-            logger.info(f"Loaded {len(response_cache)} AI response cache entries from disk")
+            logger.info("Loaded %d AI response cache entries from disk", len(response_cache))
     except Exception as e:
-        logger.error(f"Failed to load AI response cache: {e}")
+        logger.error("Failed to load AI response cache: %s", e)
         response_cache = {}
+
 
 def save_cache():
     """Save cached responses to disk"""
     try:
-        with open(CACHE_FILE, 'w') as f:
+        with open(Paths.AI_CACHE_FILE, 'w', encoding='utf-8') as f:
             json.dump(response_cache, f)
-        logger.info(f"Saved {len(response_cache)} AI response cache entries to disk")
+        logger.info("Saved %d AI response cache entries to disk", len(response_cache))
     except Exception as e:
-        logger.error(f"Failed to save AI response cache: {e}")
+        logger.error("Failed to save AI response cache: %s", e)
+
 
 def load_conversations():
     """Load user conversations from disk"""
     global user_conversations
     try:
-        if os.path.exists(CONVERSATION_FILE):
-            with open(CONVERSATION_FILE, 'r') as f:
+        if os.path.exists(Paths.CONVERSATIONS_FILE):
+            with open(Paths.CONVERSATIONS_FILE, 'r', encoding='utf-8') as f:
                 user_conversations = json.load(f)
-            logger.info(f"Loaded conversations for {len(user_conversations)} users from disk")
+            logger.info("Loaded conversations for %d users from disk", len(user_conversations))
     except Exception as e:
-        logger.error(f"Failed to load user conversations: {e}")
+        logger.error("Failed to load user conversations: %s", e)
         user_conversations = {}
+
 
 def save_conversations():
     """Save user conversations to disk"""
     try:
-        with open(CONVERSATION_FILE, 'w') as f:
+        with open(Paths.CONVERSATIONS_FILE, 'w', encoding='utf-8') as f:
             json.dump(user_conversations, f)
-        logger.info(f"Saved conversations for {len(user_conversations)} users to disk")
+        logger.info("Saved conversations for %d users to disk", len(user_conversations))
     except Exception as e:
-        logger.error(f"Failed to save user conversations: {e}")
+        logger.error("Failed to save user conversations: %s", e)
+
 
 # Load cached data at module initialization
 load_cache()
 load_conversations()
 
+
 # Set up periodic cache saving
 async def periodic_cache_save():
     """Periodically save cache and conversations to disk"""
     while True:
-        await asyncio.sleep(300)  # Save every 5 minutes
+        await asyncio.sleep(Numbers.PERIODIC_SAVE_INTERVAL)
         save_cache()
         save_conversations()
+
 
 def start_periodic_save(loop):
     """Start the periodic save task"""
     loop.create_task(periodic_cache_save())
+
 
 def add_to_cache(user_id, prompt, response):
     """Add a response to the cache"""
@@ -112,12 +125,13 @@ def add_to_cache(user_id, prompt, response):
     }
 
     # Trim cache if it's too large
-    if len(response_cache) > MAX_CACHE_SIZE:
+    if len(response_cache) > Numbers.MAX_CACHE_SIZE:
         # Remove oldest entries
         oldest_keys = sorted(response_cache.items(),
-                             key=lambda x: x[1]['timestamp'])[:len(response_cache) - MAX_CACHE_SIZE]
+                             key=lambda x: x[1]['timestamp'])[:len(response_cache) - Numbers.MAX_CACHE_SIZE]
         for key, _ in oldest_keys:
             del response_cache[key]
+
 
 def get_from_cache(user_id, prompt):
     """Get a response from the cache if it exists and is not expired"""
@@ -126,14 +140,14 @@ def get_from_cache(user_id, prompt):
     if cache_key in response_cache:
         entry = response_cache[cache_key]
         # Check if the entry is still valid
-        if entry['timestamp'] + CACHE_EXPIRY > time.time():
-            logger.info(f"Cache hit for user {user_id}")
+        if entry['timestamp'] + Numbers.CACHE_EXPIRY_SECONDS > time.time():
+            logger.info("Cache hit for user %s", user_id)
             return entry['response']
-        else:
-            # Remove expired entry
-            del response_cache[cache_key]
+        # Remove expired entry
+        del response_cache[cache_key]
 
     return None
+
 
 def check_rate_limit(user_id=None):
     """
@@ -151,8 +165,9 @@ def check_rate_limit(user_id=None):
     request_timestamps = [t for t in request_timestamps if current_time - t < 60]
 
     # Check if we've exceeded our global limit
-    if len(request_timestamps) >= MAX_REQUESTS_PER_MINUTE:
-        logger.warning(f"Global rate limit exceeded: {len(request_timestamps)} requests in the last minute")
+    if len(request_timestamps) >= Numbers.MAX_REQUESTS_PER_MINUTE:
+        logger.warning("Global rate limit exceeded: %d requests in the last minute",
+                       len(request_timestamps))
         return False
 
     # Check user-specific rate limit if user_id is provided
@@ -166,8 +181,10 @@ def check_rate_limit(user_id=None):
         ]
 
         # Check if user has exceeded their limit
-        if len(user_request_timestamps[user_id]) >= MAX_REQUESTS_PER_USER_MINUTE:
-            logger.warning(f"User rate limit exceeded for {user_id}: {len(user_request_timestamps[user_id])} requests in the last minute")
+        user_limit = Numbers.MAX_REQUESTS_PER_USER_MINUTE
+        if len(user_request_timestamps[user_id]) >= user_limit:
+            logger.warning("User rate limit exceeded for %s: %d requests in the last minute",
+                           user_id, len(user_request_timestamps[user_id]))
             return False
 
         # Add current timestamp to user's timestamps
@@ -176,6 +193,7 @@ def check_rate_limit(user_id=None):
     # Add current timestamp to global timestamps and proceed
     request_timestamps.append(current_time)
     return True
+
 
 async def check_ai_health():
     """
@@ -187,23 +205,22 @@ async def check_ai_health():
             return "UNAVAILABLE (Client not initialized)"
 
         # Make a simple, minimal API call to test connectivity
-        model_name = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+        model_name = os.getenv("OPENAI_MODEL", Models.DEFAULT_OPENAI_MODEL)
         response = client.chat.completions.create(
             model=model_name,
             messages=[
-                {"role": "system", "content": "You are a health check. Respond with 'OK'."},
+                {"role": "system", "content": Models.HEALTH_CHECK_PROMPT},
                 {"role": "user", "content": "Status?"}
             ],
             max_tokens=5,
             temperature=0,
-            timeout=5  # Short timeout for health check
+            timeout=Numbers.HEALTH_CHECK_TIMEOUT
         )
 
         # Check the response
         if response and response.choices and response.choices[0].message:
             return "OK"
-        else:
-            return "DEGRADED (Unexpected response format)"
+        return "DEGRADED (Unexpected response format)"
 
     except openai.RateLimitError:
         return "RATE LIMITED"
@@ -212,7 +229,16 @@ async def check_ai_health():
     except Exception as e:
         return f"ERROR ({str(e)[:30]}...)"
 
+
 async def handle_ai_command(bot, message, custom_prompt=None):
+    """
+    Handle AI command requests from users.
+    
+    Args:
+        bot: The bot instance
+        message: The message object containing user input
+        custom_prompt: Optional custom prompt to use instead of parsing from message
+    """
     try:
         # Import cooldown manager
         from cooldown_manager import cooldown_manager
@@ -257,19 +283,22 @@ async def handle_ai_command(bot, message, custom_prompt=None):
         from validation_utils import sanitize_ai_prompt
         prompt = sanitize_ai_prompt(prompt)
 
-        logger.info(f"Processing AI command from {user_id}: {prompt[:50]}{'...' if len(prompt) > 50 else ''}")
+        logger.info("Processing AI command from %s: %s",
+                    user_id, prompt[:50] + ('...' if len(prompt) > 50 else ''))
 
         # Check rate limiting for this user
         if not check_rate_limit(user_id):
-            remaining_time = 60 - max([time.time() - t for t in user_request_timestamps.get(user_id, [time.time() - 61])])
-            await message.channel.send(f"You're using the AI too frequently! Please wait {int(remaining_time)} seconds before trying again.")
+            user_timestamps = user_request_timestamps.get(user_id, [time.time() - 61])
+            remaining_time = 60 - max(time.time() - t for t in user_timestamps)
+            await message.channel.send(f"You're using the AI too frequently! "
+                                       f"Please wait {int(remaining_time)} seconds before trying again.")
             return
 
         # Check if we have a cached response
         cached_response = get_from_cache(user_id, prompt)
         if cached_response:
             await message.channel.send(cached_response)
-            logger.info(f"Sent cached AI response to {user_id}")
+            logger.info("Sent cached AI response to %s", user_id)
             return
 
         # Get user's conversation history or create new one
@@ -280,22 +309,22 @@ async def handle_ai_command(bot, message, custom_prompt=None):
         user_conversations[user_id].append({"role": "user", "content": prompt})
 
         # Keep only last 10 messages to avoid token limits
-        if len(user_conversations[user_id]) > 10:
-            user_conversations[user_id] = user_conversations[user_id][-10:]
+        if len(user_conversations[user_id]) > Numbers.MAX_CONVERSATION_HISTORY:
+            user_conversations[user_id] = user_conversations[user_id][-Numbers.MAX_CONVERSATION_HISTORY:]
 
         # Create messages array with system prompt and history
         messages = [
             {
                 "role": "system",
-                "content": "You are Murphy, the companion of streamer Peks. Your role is to create funny, troll-like responses that might annoy the audience, ensuring they include some emoticons like 'okayCousin', 'BedgeCousin', or any Twitch emotes. Output Format: Short and humorous responses. Include Twitch emotes or emojis",
+                "content": Models.AI_SYSTEM_PROMPT,
             },
             *user_conversations[user_id],
         ]
 
         # Make API call with timeout protection and retries
-        max_retries = 2
+        max_retries = Numbers.MAX_RETRY_ATTEMPTS - 1
         # Get model from environment or use default
-        model_name = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+        model_name = os.getenv("OPENAI_MODEL", Models.DEFAULT_OPENAI_MODEL)
 
         for retry in range(max_retries + 1):
             try:
@@ -304,7 +333,7 @@ async def handle_ai_command(bot, message, custom_prompt=None):
                     messages=messages,
                     max_tokens=150,
                     temperature=0.7,
-                    timeout=10  # 10-second timeout
+                    timeout=Numbers.API_TIMEOUT_SECONDS
                 )
 
                 reply = response.choices[0].message.content
@@ -316,7 +345,7 @@ async def handle_ai_command(bot, message, custom_prompt=None):
                 add_to_cache(user_id, prompt, reply)
 
                 await message.channel.send(reply)
-                logger.info(f"AI response sent to {user_id}")
+                logger.info("AI response sent to %s", user_id)
 
                 # Set cooldown for AI command (only for non-custom prompts)
                 if not custom_prompt:
@@ -326,43 +355,47 @@ async def handle_ai_command(bot, message, custom_prompt=None):
 
             except (TimeoutError, asyncio.TimeoutError):
                 if retry < max_retries:
-                    logger.warning(f"OpenAI API timeout for {user_id}, retry {retry+1}/{max_retries}")
-                    await asyncio.sleep(1)  # Wait before retrying
+                    logger.warning("OpenAI API timeout for %s, retry %d/%d",
+                                   user_id, retry+1, max_retries)
+                    await asyncio.sleep(Numbers.INITIAL_BACKOFF_SECONDS)
                 else:
-                    await message.channel.send("The AI is thinking too hard right now. Please try again shortly! 🕒")
-                    logger.warning(f"OpenAI API timeout for {user_id} after {max_retries} retries")
+                    await message.channel.send("The AI is thinking too hard right now. "
+                                               "Please try again shortly! 🕒")
+                    logger.warning("OpenAI API timeout for %s after %d retries",
+                                   user_id, max_retries)
                     break
 
             except openai.RateLimitError:
                 await message.channel.send(
                     "I'm a bit overwhelmed right now. Please try again in a moment! 🐺"
                 )
-                logger.warning(f"OpenAI rate limit reached for {user_id}")
+                logger.warning("OpenAI rate limit reached for %s", user_id)
                 break
 
             except openai.APIError as e:
                 if retry < max_retries:
-                    logger.warning(f"OpenAI API error for {user_id}, retry {retry+1}/{max_retries}: {str(e)}")
-                    await asyncio.sleep(1)  # Wait before retrying
+                    logger.warning("OpenAI API error for %s, retry %d/%d: %s",
+                                   user_id, retry+1, max_retries, str(e))
+                    await asyncio.sleep(Numbers.INITIAL_BACKOFF_SECONDS)
                 else:
                     await message.channel.send(
                         "Having some technical difficulties. Please try again later! 🛠️"
                     )
-                    logger.error(f"OpenAI API error after {max_retries} retries: {str(e)}")
+                    logger.error("OpenAI API error after %d retries: %s", max_retries, str(e))
                     break
 
             except Exception as e:
                 await message.channel.send(
                     "Sorry, I couldn't process that. Please try again later."
                 )
-                logger.error(f"Error processing AI command: {str(e)}")
+                logger.error("Error processing AI command: %s", str(e))
                 break
 
     except Exception as e:
-        logger.error(f"Unexpected error in handle_ai_command: {str(e)}")
+        logger.error("Unexpected error in handle_ai_command: %s", str(e))
         import traceback
         logger.error(traceback.format_exc())
         try:
             await message.channel.send("Something went wrong. Please try again later.")
-        except:
+        except Exception:
             pass  # If we can't even send a message, just log and continue

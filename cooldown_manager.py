@@ -98,7 +98,7 @@ class CooldownManager:
         while True:
             await asyncio.sleep(300)  # Clean up every 5 minutes
             self.clear_old_cooldowns()
-            logger.debug(f"Cleaned up cooldowns. Active commands: {len(self.cooldowns)}")
+            logger.debug("Cleaned up cooldowns. Active commands: %d", len(self.cooldowns))
 
 
 # Global instance
