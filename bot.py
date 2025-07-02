@@ -341,27 +341,13 @@ class MurphyAI(commands.Bot):
         await self._restart_bot(initiated_by_user=True)
 
     async def _restart_bot(self, initiated_by_user=False):
-        """Restart the bot with exponential backoff to prevent restart loops"""
+        """Restart the bot immediately without backoff delays"""
         restart_count = 0
 
         if not initiated_by_user:
-            # Only use backoff when not initiated by a user
+            # Track restart count but don't use backoff delays
             restart_count = self._increment_restart_count()
-
-            # If we've restarted too many times, delay longer to prevent restart loops
-            if restart_count > MAX_RESTART_ATTEMPTS:
-                backoff_time = INITIAL_BACKOFF_TIME * (2 ** min(restart_count - 1, 10))  # Cap at 2^10
-                logger.warning(f"Too many restart attempts ({restart_count}). Backing off for {backoff_time} seconds")
-
-                try:
-                    for channel in TWITCH_INITIAL_CHANNELS:
-                        channel_obj = self.get_channel(channel)
-                        if channel_obj:
-                            await channel_obj.send(f"Bot experiencing issues. Backing off for {backoff_time} seconds before restart.")
-                except Exception:
-                    pass  # Ignore any error while trying to send messages before restart
-
-                time.sleep(backoff_time)
+            logger.info(f"Restart attempt #{restart_count}")
 
         # Start new process
         try:
@@ -658,35 +644,9 @@ class MurphyAI(commands.Bot):
 if __name__ == "__main__":
     # Initialize global error handling
     try:
-        # Add recovery mechanism - if the bot crashes repeatedly, wait longer before trying again
-        crash_count_file = os.path.join("logs", "crash_count.txt")
-        crash_count = 0
-
-        if os.path.exists(crash_count_file):
-            try:
-                with open(crash_count_file, 'r') as f:
-                    crash_count = int(f.read().strip())
-            except:
-                crash_count = 0
-
-        # If we've crashed more than 5 times, add delay
-        if crash_count > 5:
-            wait_time = min(300, crash_count * 10)  # Max 5 minutes wait
-            logger.warning(f"Multiple crashes detected. Waiting {wait_time} seconds before starting...")
-            import time
-            time.sleep(wait_time)
-
-        # Track crash for future recovery
-        with open(crash_count_file, 'w') as f:
-            f.write(str(crash_count + 1))
-
-        # Run the bot
+        # Run the bot immediately without crash delays
         bot = MurphyAI()
         bot.run()
-
-        # If we reach here without exception, reset crash count
-        with open(crash_count_file, 'w') as f:
-            f.write("0")
 
     except KeyboardInterrupt:
         logger.info("Bot shutdown initiated by user")
