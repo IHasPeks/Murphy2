@@ -10,7 +10,7 @@ from typing import Optional, List, Tuple
 
 from config import TWITCH_INITIAL_CHANNELS, STREAM_SCHEDULE
 from constants import Numbers, Security
-from types import BotProtocol, ChannelName
+from type_definitions import BotProtocol, ChannelName
 
 logger = logging.getLogger(__name__)
 

@@ -9,7 +9,7 @@ import html
 logger = logging.getLogger(__name__)
 
 from constants import Numbers, Patterns, Commands, Security
-from types import ValidationResult
+from type_definitions import ValidationResult
 
 # Compile patterns
 COMMAND_NAME_PATTERN = re.compile(Patterns.COMMAND_NAME)
