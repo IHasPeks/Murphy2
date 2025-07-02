@@ -461,8 +461,13 @@ class MurphyAI(commands.Bot):
 
     async def event_message(self, message) -> None:
         """Handle incoming chat messages."""
+        # Check if message has an author
+        if not message.author:
+            logger.warning("Received message without author")
+            return
+
         # Ignore messages from the bot itself
-        if message.author and message.author.name.lower() == self.nick.lower():
+        if message.author.name.lower() == self.nick.lower():
             return
 
         # Track message count and log
@@ -473,7 +478,7 @@ class MurphyAI(commands.Bot):
 
         # Check if this is a new user we haven't seen before
         is_first_time_chatter = False
-        if message.author and message.author.name not in self.known_users:
+        if message.author.name not in self.known_users:
             self.known_users.add(message.author.name)
             is_first_time_chatter = True
             logger.info(f"New user detected: {message.author.name}")
@@ -494,44 +499,46 @@ class MurphyAI(commands.Bot):
                         logger.error(f"Error sending AI welcome: {e}")
                         # Don't raise the exception - if AI fails, just continue
 
-        # Process commands
+        # Let TwitchIO handle the message first for built-in commands
+        await super().event_message(message)
+
+        # Then handle custom command routing if not already handled
         if message.content.startswith(TWITCH_PREFIX):
             self.command_count += 1
-            try:
-                if message.content[len(TWITCH_PREFIX):].lower().startswith("ai "):
-                    # Handle AI command
-                    from ai_command import handle_ai_command
-                    await handle_ai_command(self, message)
-                else:
-                    # Handle other commands
-                    from commands import handle_command
-                    await handle_command(self, message)
-            except Exception as e:
-                self.error_count += 1
-                logger.error(f"Error processing command '{message.content}': {e}")
-                logger.error(traceback.format_exc())
-                await message.channel.send("Error processing command. Please try again later.")
 
-        # Process mod commands
+            # Extract command name
+            command_name = message.content[len(TWITCH_PREFIX):].split(" ")[0].lower()
+
+            # Only process if it's not a built-in command
+            if command_name not in [cmd.name for cmd in self.commands.values()]:
+                if command_name.startswith("ai"):
+                    # Handle AI command
+                    try:
+                        from ai_command import handle_ai_command
+                        await handle_ai_command(self, message)
+                    except Exception as e:
+                        self.error_count += 1
+                        logger.error(f"Error processing AI command '{message.content}': {e}")
+                        logger.error(traceback.format_exc())
+                        await message.channel.send("Error processing AI command. Please try again later.")
+                else:
+                    # Handle other commands through the commands module
+                    try:
+                        from commands import handle_command
+                        await handle_command(self, message)
+                    except Exception as e:
+                        self.error_count += 1
+                        logger.error(f"Error processing command '{message.content}': {e}")
+                        logger.error(traceback.format_exc())
+                        await message.channel.send("Error processing command. Please try again later.")
+
+        # Process mod commands with the MOD_PREFIX
         elif message.content.startswith(MOD_PREFIX):
+            # Only mods and channel owner can use mod commands
             if message.author.is_mod or message.author.name.lower() == message.channel.name.lower():
                 self.command_count += 1
-                try:
-                    # Strip the prefix and extract the command
-                    mod_command = message.content[len(MOD_PREFIX):].split(" ")[0].lower()
-
-                    # Special case for restart command (should go through the command)
-                    if mod_command == "restart" and message.author.name.lower() == message.channel.name.lower():
-                        await self.restart_bot(message)
-                    # Handle other mod commands
-                    else:
-                        # Call the appropriate method for this command
-                        await self._handle_mod_command(message, mod_command)
-                except Exception as e:
-                    self.error_count += 1
-                    logger.error(f"Error processing mod command '{message.content}': {e}")
-                    logger.error(traceback.format_exc())
-                    await message.channel.send("Error processing mod command. Please try again later.")
+                # The built-in commands decorated with @commands.command will be handled by TwitchIO
+                # since we already called super().event_message(message) above
             else:
                 await message.channel.send("Sorry, only moderators can use mod commands.")
 
@@ -646,30 +653,7 @@ class MurphyAI(commands.Bot):
         message = self.queue_manager.clear_queues()
         await ctx.send(message)
 
-    async def _handle_mod_command(self, message, mod_command):
-        """Handle moderator-only commands"""
-        # Extract command arguments
-        args = message.content[len(MOD_PREFIX) + len(mod_command):].strip()
 
-        # Convert to a command method name (e.g. 'fleave' -> 'force_kick_user')
-        command_methods = {
-            'fleave': self.force_kick_user,
-            'fjoin': self.force_join_user,
-            'moveup': self.move_user_up_command,
-            'movedown': self.move_user_down_command,
-            'teamsize': self.set_team_size,
-            'shuffle': self.shuffle_queue,
-            'clearqueue': self.clear_queue_command
-        }
-
-        if mod_command in command_methods:
-            # Call the appropriate command method
-            if args:
-                await command_methods[mod_command](message, args)
-            else:
-                await command_methods[mod_command](message)
-        else:
-            await message.channel.send(f"Unknown mod command: {mod_command}")
 
 if __name__ == "__main__":
     # Initialize global error handling
