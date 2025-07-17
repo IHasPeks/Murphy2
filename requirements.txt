@@ -1,12 +1,29 @@
-twitchio==2.10.0
-python-dotenv==1.0.0
-apscheduler==3.10.4
-openai==1.93.0
-requests==2.31.0
-googletrans==4.0.0rc1
-psutil==5.9.5
-setuptools==69.0.2
-wheel==0.41.2
-watchdog==3.0.0
+# Updated requirements for MurphyAI Twitch Bot - 2025 Edition
+# Core dependencies
+twitchio==3.0.1
+openai==1.97.0
+python-dotenv==1.0.1
+psutil==6.1.0
+
+# Task scheduling
+APScheduler==3.10.4
+
+# HTTP requests
+requests==2.32.3
+aiohttp==3.10.11
+
+# Translation
+deep-translator==1.11.4
+
+# File watching
+watchdog==6.0.0
+
+# Async timeout handling
 async-timeout==4.0.3
-aiohttp==3.9.1
+
+# Development and build tools
+setuptools==75.6.0
+wheel==0.45.1
+
+# Note: TwitchIO 3.0.1 requires Python 3.11+
+# Make sure you're using Python 3.11 or higher

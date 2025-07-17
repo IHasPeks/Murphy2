@@ -1,201 +1,283 @@
-[![Pylint](https://github.com/IHasPeks/Murphy2/actions/workflows/pylint.yml/badge.svg)](https://github.com/IHasPeks/Murphy2/actions/workflows/pylint.yml)
-# MurphyAI Twitch Bot
+# MurphyAI Twitch Bot - 2025 Edition
 
-A feature-rich Twitch chat bot built with Python designed to enhance stream interaction through custom commands, AI responses, and queue management.
+A modern, feature-rich Twitch chatbot built with Python 3.11+ and the latest dependencies. This is a complete rewrite of the original MurphyAI bot with improved architecture, better error handling, and modern Python practices.
 
-## Features
+## ✨ Features
 
-- **Custom Commands**: Add, remove, and list dynamic chat commands
-- **AI Integration**: Utilize OpenAI's GPT models for interactive responses
-- **Queue Management**: Manage viewer queues for games
-- **Translation**: Translate messages from different languages
-- **Event Scheduling**: Track stream schedules and notify viewers
-- **Fun Interactions**: Various interactive commands for viewer engagement
-- **Self-Healing**: Automatic recovery from crashes with exponential backoff
-- **State Persistence**: Maintains state across restarts and crashes
-- **Remote Management**: Channel owner can control and monitor the bot via chat commands
-- **Command Cooldowns**: Prevent spam with intelligent rate limiting
-- **Input Validation**: Comprehensive validation and sanitization for security
-- **Retry Logic**: Smart retry mechanisms for external API calls
-- **Clean Architecture**: Modular design with proper separation of concerns
+### 🤖 AI Integration
+- **OpenAI GPT Integration**: Powered by the latest OpenAI API (v1.97.0)
+- **Context-Aware Responses**: Maintains conversation history for better responses
+- **Smart Rate Limiting**: Prevents API abuse with intelligent rate limiting
+- **Caching System**: Reduces API calls with intelligent response caching
 
-## Setup
+### 🎮 Queue Management
+- **Team-Based Queues**: Manage player queues with configurable team sizes
+- **Overflow Support**: Automatic overflow queue when main queue is full
+- **Advanced Controls**: Move users up/down, force join/kick, shuffle teams
+- **Away System**: Users can mark themselves as away with auto-removal
+
+### 🔧 Command System
+- **Dynamic Commands**: Add/remove commands on-the-fly
+- **Command Aliases**: Multiple aliases for the same command
+- **Cooldown Management**: Intelligent cooldown system with mod exemptions
+- **Permission System**: Owner, mod, and user permission levels
+
+### 📊 Monitoring & Analytics
+- **Real-time Statistics**: Track messages, commands, errors, and uptime
+- **Health Monitoring**: Comprehensive health checks with system metrics
+- **Persistent State**: Automatic state saving and recovery
+- **Logging**: Structured logging with rotation and multiple levels
+
+### 🛡️ Reliability
+- **Auto-Restart**: Automatic restart on crashes with exponential backoff
+- **Connection Recovery**: Intelligent reconnection with retry logic
+- **Error Handling**: Comprehensive error handling and recovery
+- **State Persistence**: Save and restore bot state across restarts
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
-- Python 3.9 or higher
-- A Twitch account for the bot
-- Twitch developer application credentials
-- OpenAI API key (for AI commands)
+- Python 3.11 or higher
+- Twitch account for the bot
+- OpenAI API key (optional, for AI features)
 
 ### Installation
 
-1. Clone the repository
-   ```
-   git clone https://github.com/yourusername/MurphyAI.git
-   cd MurphyAI
-   ```
-
-2. Create and activate a virtual environment
-   ```
-   python -m venv venv
-   # On Windows
-   venv\Scripts\activate
-   # On macOS/Linux
-   source venv/bin/activate
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd MurphyAI2
    ```
 
-3. Install dependencies
-   ```
+2. **Install dependencies**
+   ```bash
    pip install -r requirements.txt
    ```
 
-4. Configure your environment
+3. **Configure the bot**
+   ```bash
+   cp env.example .env
+   # Edit .env with your credentials
    ```
-   cp .env.example .env
+
+4. **Run the bot**
+   ```bash
+   python main.py
    ```
 
-5. Edit the `.env` file with your credentials:
-   - Add your Twitch OAuth token (get from https://twitchapps.com/tmi/)
-   - Add your Twitch client ID
-   - Add your OpenAI API key
-   - Configure channel names and other settings
+### Configuration
 
-## Running the Bot
+#### Required Settings
+- `TWITCH_TOKEN`: OAuth token from [Twitch Token Generator](https://twitchapps.com/tmi/)
+- `TWITCH_CLIENT_ID`: Client ID from [Twitch Developer Console](https://dev.twitch.tv/console/apps)
+- `TWITCH_INITIAL_CHANNELS`: Comma-separated list of channels to join
 
-Start the bot with:
-```
-python bot.py
-```
+#### Optional Settings
+- `OPENAI_API_KEY`: For AI features
+- `TWITCH_PREFIX`: Command prefix (default: `?`)
+- `MOD_PREFIX`: Moderator command prefix (default: `\\`)
+- `LOG_LEVEL`: Logging level (default: `INFO`)
 
-### Production Deployment
+See `env.example` for all available configuration options.
 
-For production deployment, consider:
+## 🏗️ Architecture
 
-1. **Using a Process Manager**: Set up with PM2 or systemd to ensure the bot restarts after crashes
+### Modern Design Principles
+- **Separation of Concerns**: Clean separation between bot logic, state management, and events
+- **Dependency Injection**: Components are loosely coupled and easily testable
+- **Type Safety**: Comprehensive type hints throughout the codebase
+- **Error Handling**: Structured error handling with proper logging
 
-    Example systemd service:
-    ```
-    [Unit]
-    Description=MurphyAI Twitch Bot
-    After=network.target
+### Core Components
 
-    [Service]
-    User=yourusername
-    WorkingDirectory=/path/to/MurphyAI
-    ExecStart=/path/to/MurphyAI/venv/bin/python bot.py
-    Restart=always
-    RestartSec=5
+#### `core/bot.py`
+The main bot class that orchestrates all components and handles TwitchIO integration.
 
-    [Install]
-    WantedBy=multi-user.target
-    ```
+#### `core/state.py`
+**StateManager**: Handles all bot state persistence and recovery
+- User tracking and statistics
+- Command counters and usage metrics
+- Restart tracking and recovery
 
-2. **Setting Up Monitoring**: Monitor logs for errors using tools like Datadog or CloudWatch
+#### `core/events.py`
+**EventHandler**: Processes all bot events in a clean, organized manner
+- Message processing and routing
+- Connection management
+- Error handling and recovery
 
-3. **Regular Backups**: Ensure `dynamic_commands.json` is backed up regularly
+#### `commands.py`
+Command processing and routing system with support for:
+- Static commands with counters
+- Dynamic commands with aliases
+- Permission-based access control
 
-4. **State Directory**: The `state` directory contains saved bot state - include this in backups
+#### `ai_command.py`
+AI integration with OpenAI API including:
+- Conversation context management
+- Rate limiting and caching
+- Error handling and fallbacks
 
-## Command Reference
+#### `queue_manager.py`
+Queue management system for team-based gameplay:
+- Multi-queue support (main + overflow)
+- Team shuffling and management
+- User availability tracking
+
+### Dependencies
+
+#### Core Dependencies
+- **TwitchIO 3.0.1**: Modern Twitch API integration
+- **OpenAI 1.97.0**: Latest OpenAI API client
+- **Python-dotenv 1.0.1**: Environment variable management
+- **PSUtil 6.1.0**: System monitoring
+
+#### Supporting Libraries
+- **APScheduler 3.10.4**: Task scheduling
+- **Requests 2.32.3**: HTTP requests
+- **Watchdog 6.0.0**: File system monitoring
+- **Googletrans 4.0.0rc1**: Translation support
+
+## 🎛️ Commands
 
 ### User Commands
-- `?join` - Join the viewer queue
+- `?join` - Join the queue
 - `?leave` - Leave the queue
-- `?here` - Mark yourself as available in the queue
-- `?nothere` - Mark yourself as unavailable
-- `?Q` - View current queue
-- `?ai <message>` - Get AI response from Murphy
-- `?t <text>` - Translate text to English
+- `?Q` - Show current queue
+- `?here` - Mark yourself as available
+- `?nothere` - Mark yourself as not available
+- `?ai <message>` - Chat with AI
 - `?joke` - Get a random joke
-- `?latege` - Check stream schedule status
-- `?spam <message>` - Repeat a message multiple times
-- `?botstat` - Show bot statistics including uptime and message counts
+- `?t <text>` - Translate text to English
+- `?coin` - Flip a coin
+- `?cannon` - Increment cannon counter
+- `?quadra` - Increment quadra counter
+- `?penta` - Increment penta counter
+- `?botstat` - Show bot statistics
 
 ### Moderator Commands
-- `\fleave <username>` - Force-remove a user from queue
-- `\fjoin <username>` - Force-add a user to queue
-- `\moveup <username>` - Move user up in queue
-- `\movedown <username>` - Move user down in queue
-- `\teamsize <number>` - Set team size
-- `\shuffle` - Shuffle teams
-- `\clearqueue` - Clear all queues
+- `\\teamsize <size>` - Set team size
+- `\\fleave <username>` - Force remove user from queue
+- `\\fjoin <username>` - Force add user to queue
+- `\\moveup <username>` - Move user up in queue
+- `\\movedown <username>` - Move user down in queue
+- `\\shuffle` - Shuffle teams
+- `\\clearqueue` - Clear all queues
+- `\\addcmd <name> <response>` - Add dynamic command
+- `\\delcmd <name>` - Delete dynamic command
+- `\\listcmds` - List all dynamic commands
 
-### Channel Owner Only Commands
-- `\restart` - Remotely restart the bot (channel owner only)
-- `\healthcheck` - Run a health check on all bot components (channel owner only)
+### Owner Commands
+- `\\restart` - Restart the bot
+- `\\healthcheck` - Show detailed health information
 
-### Dynamic Commands
-- `?addcmd <name> <response>` - Add a custom command
-- `?delcmd <name>` - Remove a custom command
-- `?listcmds` - List all custom commands
+## 🔧 Development
 
-## Resilience Features
-
-The bot includes several resilience features to ensure reliable operation:
-
-1. **Auto-Recovery**: The bot includes a crash recovery system with exponential backoff
-2. **State Persistence**: Essential state is saved and recovered across restarts
-3. **Remote Restart**: Channel owner can trigger a restart directly from chat
-4. **Health Monitoring**: System resource usage and component health can be checked
-5. **Improved Error Handling**: All critical operations have robust error handling
-
-## Maintenance and Troubleshooting
-
-### Log Files
-Logs are stored in the `logs/` directory. Check `murphyai.log` for issues.
-
-### Common Issues
-- **Bot disconnects frequently**: Check your internet connection and Twitch token validity
-- **AI commands not working**: Verify your OpenAI API key and rate limits
-- **Commands not responding**: Check the logs for errors
-- **Bot crashed**: Use the `\restart` command to restart the bot, or check the crash recovery logs
-
-### Remote Management
-As the channel owner, you can:
-- Use `\restart` to restart the bot if it's behaving incorrectly
-- Use `\healthcheck` to see the status of various components
-- Use `?botstat` to view current bot statistics
-
-## License
-
-See the [LICENSE](LICENSE) file for details.
-
-## Project Structure
-
+### Project Structure
 ```
 MurphyAI2/
-├── bot.py                # Main bot entry point
-├── commands.py           # Command handling with no global state
-├── ai_command.py         # AI integration with OpenAI
-├── dynamic_commands.py   # Dynamic command management
-├── queue_manager.py      # Queue system for games
-├── scheduler.py          # Task scheduling (refactored with classes)
-├── cooldown_manager.py   # Command cooldown system
-├── validation_utils.py   # Input validation and sanitization
-├── retry_utils.py        # Retry logic with exponential backoff
-├── constants.py          # Centralized constants and messages
-├── types.py              # Type definitions for better type safety
-├── config.py             # Configuration management
-├── utils.py              # Utility functions
-├── env.example           # Example environment configuration
-├── PRODUCTION.md         # Production deployment guide
-├── state/                # Persistent state storage
-└── logs/                 # Application logs
+├── core/                   # Core bot components
+│   ├── __init__.py
+│   ├── bot.py             # Main bot class
+│   ├── events.py          # Event handling
+│   └── state.py           # State management
+├── config.py              # Configuration management
+├── constants.py           # Application constants
+├── commands.py            # Command processing
+├── ai_command.py          # AI integration
+├── queue_manager.py       # Queue management
+├── cooldown_manager.py    # Cooldown system
+├── dynamic_commands.py    # Dynamic command system
+├── validation_utils.py    # Input validation
+├── utils.py               # Utility functions
+├── main.py                # Application entry point
+├── requirements.txt       # Dependencies
+└── .env.example          # Configuration template
 ```
 
-## Code Quality Improvements
+### Adding New Commands
 
-The codebase has been significantly refactored for better maintainability:
+1. **Static Command**: Add to `commands.py`
+   ```python
+   async def handle_mycommand(message, args: str) -> None:
+       await message.channel.send("My response")
+   ```
 
-- **No Global Variables**: Command counters now use proper encapsulation
-- **Type Hints**: Added throughout for better IDE support and documentation
-- **Constants Management**: All magic numbers and strings centralized
-- **Error Messages**: Standardized and consistent error responses
-- **Clean Functions**: Each function has a single responsibility
-- **Proper Logging**: Comprehensive logging throughout the application
-- **Security First**: Input validation on all user inputs
+2. **Dynamic Command**: Use in chat
+   ```
+   \\addcmd mycommand My response here
+   ```
 
-## Contributing
+### Adding New Features
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+1. **Extend StateManager**: Add new state properties
+2. **Add Event Handlers**: Extend EventHandler class
+3. **Update Configuration**: Add new config options
+4. **Add Tests**: Create comprehensive tests
+
+## 🛠️ Maintenance
+
+### Logs
+- Location: `logs/murphyai.log`
+- Rotation: 10MB max, 5 backup files
+- Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+### State Files
+- `state/bot_state.pkl`: Bot state and statistics
+- `state/restart_counter.pkl`: Restart tracking
+- `state/ai_cache/`: AI response caching
+- `state/command_backups/`: Dynamic command backups
+
+### Monitoring
+- Use `\\healthcheck` for system health
+- Monitor logs for errors and warnings
+- Check `\\botstat` for runtime statistics
+
+## 🔄 Migration from Old Version
+
+1. **Backup Data**: Save your old `dynamic_commands.json` and state files
+2. **Update Dependencies**: Install new requirements
+3. **Update Configuration**: Migrate to new `.env` format
+4. **Test**: Run in development mode first
+5. **Deploy**: Switch to production mode
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes with proper type hints
+4. Add tests for new functionality
+5. Update documentation
+6. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Original MurphyAI bot inspiration
+- TwitchIO library for Twitch integration
+- OpenAI for AI capabilities
+- Python community for excellent libraries
+
+## 🆘 Support
+
+If you encounter issues:
+1. Check the logs in `logs/murphyai.log`
+2. Verify your configuration in `.env`
+3. Use `\\healthcheck` to diagnose problems
+4. Check the GitHub issues page
+5. Create a new issue with detailed information
+
+## 📋 Changelog
+
+### Version 2.0.0 (2025)
+- Complete rewrite with modern Python practices
+- Updated to TwitchIO 3.0.1 and OpenAI 1.97.0
+- Improved architecture with proper separation of concerns
+- Enhanced error handling and recovery
+- Better logging and monitoring
+- Comprehensive type hints
+- Environment-based configuration
+- Automated testing structure
+- Security improvements

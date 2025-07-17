@@ -36,6 +36,16 @@ response_cache = {}
 # Create cache directory if it doesn't exist
 os.makedirs(Paths.AI_CACHE_DIR, exist_ok=True)
 
+# Cache configuration
+CACHE_FILE = Paths.AI_CACHE_FILE
+CONVERSATION_FILE = Paths.CONVERSATIONS_FILE
+CACHE_EXPIRY = Numbers.CACHE_EXPIRY_SECONDS
+MAX_CACHE_SIZE = Numbers.MAX_CACHE_SIZE
+MAX_CONVERSATION_HISTORY = Numbers.MAX_CONVERSATION_HISTORY
+MAX_REQUESTS_PER_MINUTE = Numbers.MAX_REQUESTS_PER_MINUTE
+MAX_REQUESTS_PER_USER_MINUTE = Numbers.MAX_REQUESTS_PER_USER_MINUTE
+MAX_MESSAGE_LENGTH = Numbers.MAX_MESSAGE_LENGTH
+
 def load_cache():
     """Load cached responses from disk"""
     global response_cache

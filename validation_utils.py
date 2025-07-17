@@ -123,11 +123,11 @@ def validate_team_size(size: str) -> Tuple[bool, Optional[str]]:
     except ValueError:
         return False, "Team size must be a number"
 
-    if size_int < MIN_TEAM_SIZE:
-        return False, f"Team size must be at least {MIN_TEAM_SIZE}"
+    if size_int < Numbers.MIN_TEAM_SIZE:
+        return False, f"Team size must be at least {Numbers.MIN_TEAM_SIZE}"
 
-    if size_int > MAX_TEAM_SIZE:
-        return False, f"Team size cannot exceed {MAX_TEAM_SIZE}"
+    if size_int > Numbers.MAX_TEAM_SIZE:
+        return False, f"Team size cannot exceed {Numbers.MAX_TEAM_SIZE}"
 
     return True, None
 
@@ -143,7 +143,7 @@ def sanitize_ai_prompt(prompt: str) -> str:
         Sanitized prompt
     """
     # Basic sanitization
-    prompt = sanitize_input(prompt, MAX_MESSAGE_LENGTH)
+    prompt = sanitize_input(prompt, Numbers.MAX_MESSAGE_LENGTH)
 
     # Remove potential command injections
     injection_patterns = [
@@ -230,8 +230,8 @@ def validate_message_content(message: str, context: str = "general") -> Tuple[bo
     if not message:
         return False, "Message cannot be empty"
 
-    if len(message) > MAX_MESSAGE_LENGTH:
-        return False, f"Message too long (max {MAX_MESSAGE_LENGTH} characters)"
+    if len(message) > Numbers.MAX_MESSAGE_LENGTH:
+        return False, f"Message too long (max {Numbers.MAX_MESSAGE_LENGTH} characters)"
 
     # Check for spam patterns
     if message.count(message[0]) == len(message) and len(message) > 5:

@@ -1,15 +1,15 @@
 # utils.py
 # Utility functions for MurphyAI Twitch Chat Bot
 
-from googletrans import Translator
-
-translator = Translator()
+from deep_translator import GoogleTranslator
 
 
 def translate_text_to_english(text):
     try:
-        translation = translator.translate(text, dest="en")
-        return translation.text, translation.src
+        # Detect language and translate to English
+        translator = GoogleTranslator(source='auto', target='en')
+        translation = translator.translate(text)
+        return translation, 'auto'  # deep-translator doesn't return source language easily
     except Exception as e:
         print(f"Error translating text: {e}")
         return "Error translating text. Please try again later.", None
