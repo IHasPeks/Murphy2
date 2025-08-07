@@ -2,6 +2,7 @@
 Refactored MurphyAI bot class with better organization and separation of concerns
 """
 
+import asyncio
 import logging
 import os
 import signal
@@ -66,36 +67,57 @@ class MurphyAI(commands.Bot):
     def handle_shutdown(self, signum, frame):
         """Handle shutdown signals gracefully"""
         logger.info(f"Received signal {signum}. Shutting down gracefully...")
+        
+        # Save state
+        logger.info("Saving bot state...")
         self.state_manager.save_state()
+        
+        # Save AI conversations and cache
+        try:
+            from ai_command import save_cache, save_conversations
+            save_cache()
+            save_conversations()
+            logger.info("Saved AI cache and conversations")
+        except Exception as e:
+            logger.error(f"Error saving AI data: {e}")
+        
+        # Clean up any running tasks
+        try:
+            if hasattr(self, 'loop') and self.loop and self.loop.is_running():
+                # Cancel all tasks
+                for task in asyncio.all_tasks(self.loop):
+                    task.cancel()
+                logger.info("Cancelled all running tasks")
+        except Exception as e:
+            logger.error(f"Error cancelling tasks: {e}")
+        
+        logger.info("Bot shutdown complete")
         sys.exit(0)
 
     async def restart_bot(self, initiated_by_user: bool = False) -> None:
-        """Restart the bot with proper cleanup"""
-        restart_count = 0
-
-        if not initiated_by_user:
-            restart_count = self.state_manager.increment_restart_count()
-            logger.info(f"Restart attempt #{restart_count}")
-
+        """Restart the bot with proper cleanup (for local single-streamer use)"""
+        logger.info(f"Bot restart requested (initiated by user: {initiated_by_user})")
+        
+        # Save all state before restart
+        logger.info("Saving state before restart...")
+        self.state_manager.save_state()
+        
+        # Save AI data
         try:
-            # Save current state
-            self.state_manager.save_state()
-
-            # Start new process
-            if sys.platform.startswith('win'):
-                subprocess.Popen(['start', 'python', __file__], shell=True)
-            else:
-                subprocess.Popen(['python3', __file__],
-                                start_new_session=True,
-                                stdout=subprocess.DEVNULL,
-                                stderr=subprocess.DEVNULL)
-
-            logger.info(f"Bot restarting - shutting down current instance (initiated by user: {initiated_by_user})")
-            os._exit(0)
-
+            from ai_command import save_cache, save_conversations
+            save_cache()
+            save_conversations()
         except Exception as e:
-            logger.critical(f"Failed to restart bot: {e}")
-            logger.critical(traceback.format_exc())
+            logger.error(f"Error saving AI data during restart: {e}")
+        
+        # For local use, just exit cleanly and let the user restart
+        # This is safer than trying to spawn new processes
+        logger.info("Bot will now exit. Please restart the bot manually.")
+        logger.info("To restart: python main.py")
+        
+        # Clean exit
+        await asyncio.sleep(1)  # Give time for messages to be sent
+        sys.exit(0)
 
     # TwitchIO Event Handlers
 

@@ -2,6 +2,7 @@
 Task scheduler module for the MurphyAI Twitch bot.
 Handles periodic tasks and stream status checking.
 """
+import os
 import asyncio
 import random
 import logging
@@ -13,6 +14,9 @@ from constants import Numbers, Security
 from type_definitions import BotProtocol, ChannelName
 
 logger = logging.getLogger(__name__)
+
+# Configuration for stream status checker (disabled by default for local use)
+ENABLE_STREAM_STATUS_CHECKER = os.getenv("ENABLE_STREAM_STATUS_CHECKER", "false").lower() == "true"
 
 
 class StreamStatusChecker:
@@ -169,11 +173,16 @@ class Scheduler:
 
     async def start(self) -> None:
         """Start all scheduled tasks."""
-        # Start stream status checker
-        stream_task = asyncio.create_task(self.stream_checker.start())
-        self.tasks.append(stream_task)
+        # Only start stream status checker if enabled
+        if ENABLE_STREAM_STATUS_CHECKER:
+            logger.info("Starting stream status checker")
+            stream_task = asyncio.create_task(self.stream_checker.start())
+            self.tasks.append(stream_task)
+        else:
+            logger.info("Stream status checker is disabled")
 
-        # Add any periodic messages here (currently disabled)
+        # Add any periodic messages here (currently disabled for local use)
+        # To enable, set ENABLE_PERIODIC_MESSAGES=true in your .env file
         # await self.message_sender.add_periodic_message(
         #     interval_hours=1,
         #     message="Remember to follow and subscribe!"

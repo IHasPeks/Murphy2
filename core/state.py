@@ -1,10 +1,10 @@
 """
 State management for MurphyAI bot
-Handles state persistence and recovery
+Handles state persistence and recovery using JSON for security
 """
 
 import os
-import pickle
+import json
 import logging
 from typing import Dict, Set, Any, Optional
 from datetime import datetime
@@ -18,8 +18,9 @@ class StateManager:
     """Manages bot state persistence and recovery"""
 
     def __init__(self):
-        self.state_file = Paths.BOT_STATE_FILE
-        self.restart_counter_file = Paths.RESTART_COUNTER_FILE
+        # Use JSON files instead of pickle for security
+        self.state_file = Paths.BOT_STATE_FILE.replace('.pkl', '.json')
+        self.restart_counter_file = Paths.RESTART_COUNTER_FILE.replace('.pkl', '.json')
         
         # Initialize state
         self.known_users: Set[str] = set()
@@ -38,7 +39,7 @@ class StateManager:
         }
 
     def save_state(self) -> None:
-        """Save current bot state to disk"""
+        """Save current bot state to disk using JSON"""
         try:
             state = {
                 "known_users": list(self.known_users),
@@ -52,8 +53,12 @@ class StateManager:
                 "timestamp": datetime.now().isoformat()
             }
             
-            with open(self.state_file, 'wb') as f:
-                pickle.dump(state, f)
+            # Ensure directory exists
+            os.makedirs(os.path.dirname(self.state_file), exist_ok=True)
+            
+            # Save as JSON with pretty formatting
+            with open(self.state_file, 'w') as f:
+                json.dump(state, f, indent=2)
             
             logger.info("Bot state saved successfully")
             
@@ -62,15 +67,39 @@ class StateManager:
 
     def load_state(self) -> None:
         """Load bot state from disk if available"""
-        if not os.path.exists(self.state_file):
-            logger.info("No saved state found, starting fresh")
-            return
-            
+        # Try to load from JSON first
+        if os.path.exists(self.state_file):
+            try:
+                with open(self.state_file, 'r') as f:
+                    state = json.load(f)
+                    self._restore_state(state)
+                    logger.info("Bot state loaded successfully from JSON")
+                    return
+            except Exception as e:
+                logger.error(f"Failed to load state from JSON: {e}")
+        
+        # Try to migrate from old pickle file if it exists
+        old_pickle_file = Paths.BOT_STATE_FILE
+        if os.path.exists(old_pickle_file):
+            try:
+                import pickle
+                with open(old_pickle_file, 'rb') as f:
+                    state = pickle.load(f)
+                    self._restore_state(state)
+                    logger.info("Migrated state from pickle to JSON")
+                    # Save in new format
+                    self.save_state()
+                    # Rename old file
+                    os.rename(old_pickle_file, old_pickle_file + '.backup')
+                    return
+            except Exception as e:
+                logger.error(f"Failed to migrate from pickle: {e}")
+        
+        logger.info("No saved state found, starting fresh")
+    
+    def _restore_state(self, state: Dict[str, Any]) -> None:
+        """Restore state from loaded data"""
         try:
-            with open(self.state_file, 'rb') as f:
-                state = pickle.load(f)
-            
-            # Restore state
             self.known_users = set(state.get("known_users", []))
             self.start_time = state.get("start_time", datetime.now().timestamp())
             self.message_count = state.get("message_count", 0)
@@ -83,12 +112,9 @@ class StateManager:
                 'quadra': 0,
                 'penta': 0
             })
-            
-            logger.info("Bot state loaded successfully")
-            
         except Exception as e:
-            logger.error(f"Failed to load bot state: {e}")
-            logger.info("Starting with default state")
+            logger.error(f"Error restoring state: {e}")
+            logger.info("Using default state")
 
     def increment_message_count(self) -> None:
         """Increment message counter"""
@@ -145,8 +171,9 @@ class StateManager:
         """Get current restart attempt count"""
         try:
             if os.path.exists(self.restart_counter_file):
-                with open(self.restart_counter_file, 'rb') as f:
-                    return pickle.load(f)
+                with open(self.restart_counter_file, 'r') as f:
+                    data = json.load(f)
+                    return data.get('count', 0)
             return 0
         except Exception:
             return 0
@@ -155,8 +182,9 @@ class StateManager:
         """Increment restart attempt counter"""
         try:
             count = self.get_restart_count() + 1
-            with open(self.restart_counter_file, 'wb') as f:
-                pickle.dump(count, f)
+            os.makedirs(os.path.dirname(self.restart_counter_file), exist_ok=True)
+            with open(self.restart_counter_file, 'w') as f:
+                json.dump({'count': count, 'timestamp': datetime.now().isoformat()}, f)
             return count
         except Exception as e:
             logger.error(f"Failed to increment restart counter: {e}")
@@ -165,8 +193,9 @@ class StateManager:
     def reset_restart_counter(self) -> None:
         """Reset restart counter after successful initialization"""
         try:
-            with open(self.restart_counter_file, 'wb') as f:
-                pickle.dump(0, f)
+            os.makedirs(os.path.dirname(self.restart_counter_file), exist_ok=True)
+            with open(self.restart_counter_file, 'w') as f:
+                json.dump({'count': 0, 'timestamp': datetime.now().isoformat()}, f)
         except Exception as e:
             logger.warning(f"Failed to reset restart counter: {e}")
 

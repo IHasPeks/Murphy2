@@ -6,6 +6,7 @@ This makes it easy to set up the bot without editing code
 import os
 import sys
 import getpass
+import subprocess
 
 def get_input(prompt, default="", hide=False):
     """Get input from user with optional default value"""
@@ -177,7 +178,23 @@ ENVIRONMENT = "production"
     response = input("\nDo you want to build the executable now? (y/n): ")
     if response.lower() == 'y':
         print("\nStarting build process...")
-        os.system(f"{sys.executable} build_executable.py")
+        try:
+            # Use subprocess.run for better security and error handling
+            result = subprocess.run(
+                [sys.executable, "build_executable.py"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            print("Build completed successfully!")
+            if result.stdout:
+                print(result.stdout)
+        except subprocess.CalledProcessError as e:
+            print(f"Build failed with error: {e}")
+            if e.stderr:
+                print(f"Error details: {e.stderr}")
+        except FileNotFoundError:
+            print("Error: build_executable.py not found")
 
 if __name__ == "__main__":
     main()

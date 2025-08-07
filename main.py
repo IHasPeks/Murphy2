@@ -9,6 +9,15 @@ import sys
 import traceback
 from logging.handlers import RotatingFileHandler
 
+# Check Python version before importing anything else
+if sys.version_info < (3, 11):
+    print("=" * 60)
+    print("ERROR: Python 3.11 or higher is required!")
+    print(f"Your current version: Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}")
+    print("Please upgrade Python from: https://www.python.org/downloads/")
+    print("=" * 60)
+    sys.exit(1)
+
 from config import LOG_LEVEL, LOG_FILE, ENVIRONMENT
 from constants import Numbers
 from core import MurphyAI
@@ -70,21 +79,10 @@ def main() -> None:
         logger.critical(f"Bot crashed: {str(e)}")
         logger.critical(traceback.format_exc())
         
-        # In production, try to restart
-        if ENVIRONMENT == "production":
-            logger.info("Attempting to restart bot...")
-            try:
-                import subprocess
-                if sys.platform.startswith('win'):
-                    subprocess.Popen(['start', 'python', __file__], shell=True)
-                else:
-                    subprocess.Popen(['python3', __file__])
-                os._exit(1)
-            except Exception as restart_error:
-                logger.critical(f"Failed to restart bot: {restart_error}")
-                sys.exit(1)
-        else:
-            raise
+        # In production, try to restart (disabled for local single-streamer use)
+        # Restart should be handled by the user or a process manager
+        logger.critical("Bot crashed - please restart manually")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
