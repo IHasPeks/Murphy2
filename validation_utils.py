@@ -34,6 +34,11 @@ def sanitize_input(text: str, max_length: int = Numbers.MAX_MESSAGE_LENGTH) -> s
     # Truncate to max length
     text = text[:max_length]
 
+    # Remove potential script tags
+    text = re.sub(r"<\s*script[^>]*>", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"<\s*/\s*script\s*>", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"alert\s*\(.*?\)", "", text, flags=re.IGNORECASE)
+
     # Remove control characters except newlines and tabs
     text = ''.join(char for char in text if char.isprintable() or char in '\n\t')
 
@@ -106,6 +111,8 @@ def validate_username(username: str) -> Tuple[bool, Optional[str]]:
         return False, f"Username too long (max {Numbers.MAX_USERNAME_LENGTH} characters)"
 
     if not USERNAME_PATTERN.match(username):
+        if ' ' in username:
+            return False, "Username cannot contain spaces"
         return False, "Invalid username format"
 
     return True, None

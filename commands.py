@@ -21,18 +21,47 @@ logger = logging.getLogger(__name__)
 dynamic_commands = DynamicCommandManager()
 
 
-# Legacy functions for backwards compatibility
+class CommandCounters:
+    """Manages command counters with proper encapsulation."""
+
+    def __init__(self):
+        self.counters: Dict[str, int] = {
+            'cannon': 0,
+            'quadra': 0,
+            'penta': 0
+        }
+
+    def increment(self, command: str) -> int:
+        """Increment a counter and return the new value."""
+        if command in self.counters:
+            self.counters[command] += 1
+            return self.counters[command]
+        return 0
+
+    def get(self, command: str) -> int:
+        """Get the current value of a counter."""
+        return self.counters.get(command, 0)
+
+    def set_all(self, cannon: int = 0, quadra: int = 0, penta: int = 0) -> None:
+        """Set all counters - used for state restoration."""
+        self.counters['cannon'] = cannon
+        self.counters['quadra'] = quadra
+        self.counters['penta'] = penta
+        logger.info(f"Command counts restored: cannon={cannon}, quadra={quadra}, penta={penta}")
+
+
+# Global instance of command counters
+command_counters = CommandCounters()
+
+
 def set_command_counts(cannon: int = 0, quadra: int = 0, penta: int = 0) -> None:
-    """Legacy function for backwards compatibility - now uses state manager."""
-    # This is now handled by the StateManager
-    pass
+    """Legacy function for backwards compatibility."""
+    command_counters.set_all(cannon, quadra, penta)
 
 
 def get_command_count(command_name: str) -> int:
-    """Get the count for a specific command - now uses state manager."""
-    # This is now handled by the StateManager
-    # For backwards compatibility, return 0 if not available
-    return 0
+    """Get the count for a specific command."""
+    return command_counters.get(command_name)
 
 
 async def handle_command(bot, message) -> None:
@@ -218,34 +247,19 @@ async def handle_lurk(message, args: str) -> None:
 
 async def handle_penta(message, args: str) -> None:
     """Handle the penta command."""
-    # Get bot instance from the message context
-    bot = message.bot if hasattr(message, 'bot') else None
-    if bot and hasattr(bot, 'state_manager'):
-        count = bot.state_manager.increment_command_counter('penta')
-    else:
-        count = 1  # fallback
+    count = command_counters.increment('penta')
     await message.channel.send(Messages.PENTA_KILL.format(count=count))
 
 
 async def handle_quadra(message, args: str) -> None:
     """Handle the quadra command."""
-    # Get bot instance from the message context
-    bot = message.bot if hasattr(message, 'bot') else None
-    if bot and hasattr(bot, 'state_manager'):
-        count = bot.state_manager.increment_command_counter('quadra')
-    else:
-        count = 1  # fallback
+    count = command_counters.increment('quadra')
     await message.channel.send(Messages.QUADRA_KILL.format(count=count))
 
 
 async def handle_cannon(message, args: str) -> None:
     """Handle the cannon command."""
-    # Get bot instance from the message context
-    bot = message.bot if hasattr(message, 'bot') else None
-    if bot and hasattr(bot, 'state_manager'):
-        count = bot.state_manager.increment_command_counter('cannon')
-    else:
-        count = 1  # fallback
+    count = command_counters.increment('cannon')
     await message.channel.send(Messages.CANNON_COUNT.format(count=count))
 
 

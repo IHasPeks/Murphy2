@@ -25,5 +25,11 @@ async-timeout==4.0.3
 setuptools==75.6.0
 wheel==0.45.1
 
+# Testing dependencies
+pytest==8.3.3
+pytest-asyncio==0.24.0
+pytest-mock==3.14.0
+pytest-cov==6.0.0
+
 # Note: TwitchIO 3.0.1 requires Python 3.11+
 # Make sure you're using Python 3.11 or higher

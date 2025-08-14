@@ -1,0 +1,17 @@
+{
+  "known_users": [
+    "officiallysp"
+  ],
+  "start_time": 1754577663.891071,
+  "message_count": 85,
+  "command_count": 41,
+  "error_count": 45,
+  "last_reconnect_time": 0,
+  "reconnect_attempts": 0,
+  "command_counters": {
+    "cannon": 0,
+    "quadra": 0,
+    "penta": 0
+  },
+  "timestamp": "2025-08-07T16:03:20.311672"
+}

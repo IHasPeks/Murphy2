@@ -20,9 +20,8 @@ except Exception as e:
     logger.error(f"Failed to initialize OpenAI client: {e}")
     client = None
 
-# Store conversation history for each user with timestamps
+# Store conversation history for each user
 user_conversations = {}
-user_last_activity = {}  # Track last activity time for cleanup
 
 # Import constants
 from constants import Numbers, Paths, Messages, Models
@@ -33,10 +32,6 @@ user_request_timestamps = {}  # Keep track of per-user timestamps
 
 # Cache for recent AI responses
 response_cache = {}
-
-# Memory management settings
-MAX_CONVERSATION_AGE_HOURS = 1  # Clear conversations older than 1 hour
-MAX_USERS_IN_MEMORY = 100  # Maximum number of users to keep in memory
 
 # Create cache directory if it doesn't exist
 os.makedirs(Paths.AI_CACHE_DIR, exist_ok=True)
@@ -103,77 +98,17 @@ def save_conversations():
 load_cache()
 load_conversations()
 
-def cleanup_old_conversations():
-    """Remove old conversations and inactive users from memory"""
-    current_time = time.time()
-    max_age_seconds = MAX_CONVERSATION_AGE_HOURS * 3600
-    
-    # Clean up old conversations
-    users_to_remove = []
-    for user_id in list(user_conversations.keys()):
-        if user_id in user_last_activity:
-            if current_time - user_last_activity[user_id] > max_age_seconds:
-                users_to_remove.append(user_id)
-        else:
-            # No activity timestamp, mark for removal
-            users_to_remove.append(user_id)
-    
-    # Remove old users
-    for user_id in users_to_remove:
-        del user_conversations[user_id]
-        if user_id in user_last_activity:
-            del user_last_activity[user_id]
-        logger.debug(f"Cleaned up conversation history for {user_id}")
-    
-    if users_to_remove:
-        logger.info(f"Cleaned up {len(users_to_remove)} old conversation histories")
-    
-    # If we still have too many users, remove the oldest ones
-    if len(user_conversations) > MAX_USERS_IN_MEMORY:
-        # Sort by last activity and keep only the most recent
-        sorted_users = sorted(
-            user_last_activity.items(),
-            key=lambda x: x[1],
-            reverse=True
-        )
-        users_to_keep = set(user[0] for user in sorted_users[:MAX_USERS_IN_MEMORY])
-        
-        for user_id in list(user_conversations.keys()):
-            if user_id not in users_to_keep:
-                del user_conversations[user_id]
-                if user_id in user_last_activity:
-                    del user_last_activity[user_id]
-        
-        logger.info(f"Reduced conversation memory to {MAX_USERS_IN_MEMORY} users")
-
-# Set up periodic cache saving and cleanup
-async def periodic_maintenance():
-    """Periodically save cache, conversations, and clean up memory"""
+# Set up periodic cache saving
+async def periodic_cache_save():
+    """Periodically save cache and conversations to disk"""
     while True:
-        await asyncio.sleep(300)  # Run every 5 minutes
-        
-        # Save current state
+        await asyncio.sleep(300)  # Save every 5 minutes
         save_cache()
         save_conversations()
-        
-        # Clean up old data
-        cleanup_old_conversations()
-        
-        # Clean up old cache entries
-        current_time = time.time()
-        expired_keys = [
-            k for k, v in response_cache.items()
-            if v.get('timestamp', 0) + CACHE_EXPIRY < current_time
-        ]
-        for key in expired_keys:
-            del response_cache[key]
-        
-        if expired_keys:
-            logger.debug(f"Cleaned up {len(expired_keys)} expired cache entries")
 
 def start_periodic_save(loop):
-    """Start the periodic maintenance task"""
-    loop.create_task(periodic_maintenance())
+    """Start the periodic save task"""
+    loop.create_task(periodic_cache_save())
 
 def add_to_cache(user_id, prompt, response):
     """Add a response to the cache"""
@@ -350,9 +285,6 @@ async def handle_ai_command(bot, message, custom_prompt=None):
         # Get user's conversation history or create new one
         if user_id not in user_conversations:
             user_conversations[user_id] = []
-        
-        # Track user activity time for cleanup
-        user_last_activity[user_id] = time.time()
 
         # Add user's message to history
         user_conversations[user_id].append({"role": "user", "content": prompt})

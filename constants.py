@@ -12,8 +12,12 @@ class Messages:
     """Centralized message templates for consistent bot responses."""
 
     # Welcome and Status
-    BOT_INITIALIZED = "MurphyAI Bot is online and ready! Type ?help for commands."
-    BOT_RESTART_INITIATED = "Bot restart initiated. Please restart the bot manually."
+    BOT_INITIALIZED = (
+        "Murphy2 initialized. Murphy2 is in alpha and may break anytime. "
+        "See known issues here: https://github.com/IHasPeks/Murphy2/issues. "
+        "use ?about for more info"
+    )
+    BOT_RESTART_INITIATED = "Bot restart initiated. The bot will be back in a few seconds..."
 
     # Queue Messages
     QUEUE_JOINED = "{username} joined main queue. Pos: {position}"
